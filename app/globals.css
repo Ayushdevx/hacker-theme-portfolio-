@@ -644,3 +644,176 @@ html {
     animation-duration: 15s;
   }
 }
+
+/* Mobile-specific animations and responsive optimizations */
+@media (max-width: 640px) {
+  /* Optimize animations for performance on mobile */
+  .animate-profile-animate {
+    animation-duration: 12s; /* Slower animation on mobile for better performance */
+  }
+  
+  .profile-container {
+    transform: scale(0.95);
+  }
+  
+  .profile-container:hover {
+    transform: scale(0.98);
+  }
+  
+  .animate-float-slow {
+    animation: float-slow 8s ease-in-out infinite; /* Slower for mobile */
+  }
+  
+  .animate-float-medium, .animate-float-fast {
+    animation-duration: 6s; /* Standardize animation speed on mobile */
+  }
+  
+  /* Reduced motion option for accessibility */
+  @media (prefers-reduced-motion) {
+    .animate-profile-animate,
+    .animate-float-slow,
+    .animate-float-medium,
+    .animate-float-fast,
+    .animate-pulse-slow,
+    .animate-scale-pulse,
+    .animate-rotate-glow,
+    .animate-rotate-border,
+    .animate-slide-up,
+    .animate-slide-down,
+    .animate-slide-left,
+    .animate-slide-right,
+    .animate-bounce,
+    .animate-pulse-glow,
+    .animate-spin-3d,
+    .orbiting-elliptical,
+    .orbiting-reverse,
+    .animate-spin-slow,
+    .animate-spin-reverse-slow,
+    .wave-1,
+    .cosmic-orb,
+    .profile-image {
+      animation: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+  
+  /* Mobile-optimized entrance animations */
+  .mobile-slide-up {
+    animation: mobile-slide-up 0.5s ease forwards;
+  }
+  
+  @keyframes mobile-slide-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Simplified staggered animations for mobile */
+  .mobile-stagger > *:nth-child(odd) {
+    animation-delay: 0.1s;
+  }
+  
+  .mobile-stagger > *:nth-child(even) {
+    animation-delay: 0.3s;
+  }
+  
+  /* Mobile-optimized pulse effect */
+  @keyframes mobile-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+  }
+  
+  .mobile-pulse {
+    animation: mobile-pulse 3s infinite ease-in-out;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .profile-container:hover .profile-glow,
+  .profile-container:hover .profile-outline {
+    opacity: 0; /* Disable hover effects on touch devices */
+  }
+  
+  /* Active state for touch instead of hover */
+  .profile-container:active .profile-glow {
+    opacity: 1;
+    transition: opacity 0.1s ease;
+  }
+  
+  .profile-container:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Special touch feedback effects */
+  .touch-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .touch-ripple::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.4s, opacity 0.8s;
+  }
+  
+  .touch-ripple:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+  }
+}
+
+/* Enhanced loading animations for slower connections */
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton-loader {
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 25%, 
+    rgba(255, 255, 255, 0.1) 37%, 
+    rgba(255, 255, 255, 0.05) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.5s ease infinite;
+  border-radius: 4px;
+}
+
+/* Progressive loading classes */
+.progressive-load {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.progressive-load.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
