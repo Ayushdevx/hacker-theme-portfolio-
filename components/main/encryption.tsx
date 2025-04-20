@@ -10,7 +10,7 @@ export const Encryption = () => {
     <div className="flex flex-row relative items-center justify-center min-h-screen w-full h-full -z-20">
       <div className="absolute w-auto h-auto top-0 z-[5]">
         <motion.div
-          variants={slideInFromTop}
+          variants={slideInFromTop(0.5)}
           className="text-[40px] font-medium text-center text-gray-200"
         >
           Performance{" "}

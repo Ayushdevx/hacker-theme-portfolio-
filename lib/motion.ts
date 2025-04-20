@@ -1,4 +1,6 @@
-export function slideInFromLeft(delay: number) {
+import { Variants } from "framer-motion";
+
+export function slideInFromLeft(delay: number): Variants {
   return {
     hidden: { x: -100, opacity: 0 },
     visible: {
@@ -12,7 +14,7 @@ export function slideInFromLeft(delay: number) {
   };
 }
 
-export function slideInFromRight(delay: number) {
+export function slideInFromRight(delay: number): Variants {
   return {
     hidden: { x: 100, opacity: 0 },
     visible: {
@@ -26,7 +28,7 @@ export function slideInFromRight(delay: number) {
   };
 }
 
-export function slideInFromTop(delay: number) {
+export function slideInFromTop(delay: number): Variants {
   return {
     hidden: { y: -100, opacity: 0 },
     visible: {

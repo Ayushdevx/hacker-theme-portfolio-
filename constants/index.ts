@@ -337,7 +337,16 @@ export const FULLSTACK_SKILL = [
   },
 ] as const;
 
-export const OTHER_SKILL = [] as const;
+// Define the type explicitly
+type SkillItem = {
+  skill_name: string;
+  image: string;
+  width: number;
+  height: number;
+};
+
+// Use the defined type for the empty array
+export const OTHER_SKILL: SkillItem[] = [];
 
 export const LANGUAGES = [
   { name: "English", level: "Fluent" },
