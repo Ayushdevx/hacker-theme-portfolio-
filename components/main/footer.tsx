@@ -187,7 +187,7 @@ export const Footer = () => {
                 <FaHeartbeat className="text-purple-500 w-4 h-4" />
               </motion.div>
               <p className="text-gray-400 text-sm">
-                &nbsp;by <span className="text-purple-400 hover:text-purple-300 cursor-pointer">Ayush Upadhyay</span> &copy; {new Date().getFullYear()}
+                &nbsp;by <Link href="https://github.com/Ayushdevx" target="_blank" rel="noreferrer noopener" className="text-purple-400 hover:text-purple-300 transition-colors">Ayush Upadhyay</Link> &copy; {new Date().getFullYear()}
               </p>
             </div>
           </div>

@@ -15,13 +15,22 @@ import {
 export const HeroContent = () => {
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const fullText = "Aditi Singh";
   const typingSpeed = 150;
   const eraseSpeed = 100;
   const pauseDuration = 2000;
   const profileRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
-  // Simple mouse move effect for profile tilt
+  // Mark image as loaded
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
+  // Enhanced interactive profile effect
   useEffect(() => {
     const profileElement = profileRef.current;
     
@@ -32,34 +41,50 @@ export const HeroContent = () => {
       const x = e.clientX - left;
       const y = e.clientY - top;
       
+      setMousePosition({ x, y });
+      
       // Calculate distance from center (normalized)
       const centerX = width / 2;
       const centerY = height / 2;
       const distanceX = (x - centerX) / (width / 2);
       const distanceY = (y - centerY) / (height / 2);
       
-      // Apply gentle 3D rotation effect
+      // Apply smooth 3D rotation with dynamic strength based on distance
+      const rotationStrength = Math.min(Math.sqrt(distanceX ** 2 + distanceY ** 2) * 7, 10);
+      
       profileElement.style.transform = `
         perspective(1000px) 
-        rotateX(${distanceY * 5}deg) 
-        rotateY(${-distanceX * 5}deg)
+        rotateX(${distanceY * rotationStrength}deg) 
+        rotateY(${-distanceX * rotationStrength}deg)
+        scale(${isHovered ? 1.03 : 1})
       `;
     };
     
     const resetTransform = () => {
       if (!profileElement) return;
-      profileElement.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+      profileElement.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+      setIsHovered(false);
+    };
+    
+    const handleMouseEnter = () => {
+      setIsHovered(true);
+    };
+    
+    const handleMouseLeave = () => {
+      resetTransform();
     };
     
     // Add event listeners
     document.addEventListener('mousemove', handleMouseMove);
-    profileElement?.addEventListener('mouseleave', resetTransform);
+    profileElement?.addEventListener('mouseenter', handleMouseEnter);
+    profileElement?.addEventListener('mouseleave', handleMouseLeave);
     
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
-      profileElement?.removeEventListener('mouseleave', resetTransform);
+      profileElement?.removeEventListener('mouseenter', handleMouseEnter);
+      profileElement?.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, []);
+  }, [isHovered]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -140,6 +165,8 @@ export const HeroContent = () => {
             href={CONTACT_INFO.resume}
             download
             className="py-2 px-4 button-primary text-center text-white cursor-pointer rounded-lg flex items-center space-x-2 hover:scale-105 transition-transform"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 15px 5px rgba(186, 156, 255, 0.3)" }}
+            whileTap={{ scale: 0.95 }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -151,6 +178,8 @@ export const HeroContent = () => {
             variants={slideInFromLeft(1.2)}
             href="#contact"
             className="py-2 px-4 button-primary text-center text-white cursor-pointer rounded-lg flex items-center space-x-2 hover:scale-105 transition-transform"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 15px 5px rgba(186, 156, 255, 0.3)" }}
+            whileTap={{ scale: 0.95 }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -163,41 +192,157 @@ export const HeroContent = () => {
       <motion.div
         variants={slideInFromRight(0.8)}
         className="w-full md:w-1/2 h-full flex justify-center items-center mt-10 md:mt-0"
-        ref={profileRef}
+        style={{ perspective: "1000px" }}
       >
-        <div className="relative w-[300px] h-[300px] profile-container group">
-          {/* Glow effect with gradient */}
-          <div className="profile-glow absolute inset-0 rounded-full bg-gradient-to-br from-purple-500 via-cyan-500 to-violet-500 animate-rotate-glow opacity-75 blur-sm group-hover:blur-md transition-all duration-500"></div>
-          <div className="absolute inset-1 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 opacity-60 animate-pulse-slow blur-[2px] group-hover:opacity-80 transition-all duration-500"></div>
+        <div 
+          className="relative w-[300px] h-[300px] profile-container transform-gpu"
+          ref={profileRef}
+        >
+          {/* Animated background glow */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: isLoaded ? [0.5, 0.8, 0.5] : 0,
+              scale: isLoaded ? [0.9, 1.05, 0.9] : 0.8,
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 5,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-[-15px] rounded-full bg-gradient-to-br from-purple-500 via-cyan-500 to-violet-500 blur-lg"
+          />
           
-          {/* Main profile picture */}
-          <div className="absolute inset-3 rounded-full overflow-hidden z-10 group-hover:scale-[1.02] transition-all duration-300">
+          {/* Secondary reactive glow */}
+          <motion.div 
+            animate={{ 
+              background: isHovered 
+                ? "radial-gradient(circle at center, rgba(186, 156, 255, 0.6) 0%, rgba(156, 178, 255, 0.4) 50%, transparent 80%)" 
+                : "radial-gradient(circle at center, rgba(186, 156, 255, 0.4) 0%, rgba(156, 178, 255, 0.2) 50%, transparent 80%)"
+            }}
+            className="absolute inset-[-8px] rounded-full opacity-90 transition-all duration-300 blur-sm"
+          />
+          
+          {/* Multiple orbit lines */}
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-[-25px] rounded-full border border-purple-500/30"
+          />
+          
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-[-15px] rounded-full border border-cyan-500/20"
+          />
+          
+          {/* Floating orbs */}
+          <motion.div 
+            animate={{ 
+              y: [0, -20, 0], 
+              x: [0, 10, 0],
+              scale: [1, 1.1, 1],
+              boxShadow: [
+                "0 0 5px 2px rgba(186, 156, 255, 0.3)",
+                "0 0 15px 5px rgba(186, 156, 255, 0.5)",
+                "0 0 5px 2px rgba(186, 156, 255, 0.3)",
+              ]
+            }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="absolute -top-4 -right-4 w-10 h-10 bg-purple-500 rounded-full opacity-80"
+          />
+          
+          <motion.div
+            animate={{ 
+              y: [0, 15, 0], 
+              x: [0, -8, 0],
+              scale: [1, 1.08, 1],
+              boxShadow: [
+                "0 0 5px 2px rgba(156, 178, 255, 0.3)",
+                "0 0 12px 4px rgba(156, 178, 255, 0.5)",
+                "0 0 5px 2px rgba(156, 178, 255, 0.3)",
+              ]
+            }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
+            className="absolute -bottom-4 -left-4 w-6 h-6 bg-cyan-500 rounded-full opacity-80"
+          />
+          
+          <motion.div
+            animate={{ 
+              y: [0, -15, 0], 
+              x: [0, -10, 0],
+              scale: [1, 1.15, 1],
+              boxShadow: [
+                "0 0 5px 2px rgba(233, 156, 255, 0.3)",
+                "0 0 15px 5px rgba(233, 156, 255, 0.5)",
+                "0 0 5px 2px rgba(233, 156, 255, 0.3)",
+              ]
+            }}
+            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1 }}
+            className="absolute top-1/2 -right-8 w-8 h-8 bg-violet-500 rounded-full opacity-80"
+          />
+          
+          {/* Interactive spotlight effect */}
+          {isHovered && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.7 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 rounded-full z-10 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.15) 0%, transparent 70%)`,
+              }}
+            />
+          )}
+          
+          {/* Profile image with subtle animations */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 rounded-full overflow-hidden z-5 transform-gpu"
+            style={{ willChange: "transform" }}
+          >
             <Image
               src="/profile pic.jpg"
               alt="Aditi Singh"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-full"
+              width={300}
+              height={300}
+              className="rounded-full object-cover w-full h-full"
               priority
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFeAJcMohCnQAAAABJRU5ErkJggg=="
+              ref={imageRef}
             />
-          </div>
+          </motion.div>
           
-          {/* Rotating border outline */}
-          <div className="profile-outline absolute inset-0 rounded-full animate-rotate-border opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div className="absolute inset-[-3px] rounded-full border-2 border-dashed border-purple-400 opacity-30 group-hover:opacity-50 animate-rotate-border-reverse"></div>
+          {/* Subtle sparkle effects */}
+          <motion.div
+            animate={{ 
+              opacity: [0, 1, 0],
+              scale: [0.5, 1.2, 0.5]
+            }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 0 }}
+            className="absolute w-3 h-3 top-5 right-10 rounded-full bg-white blur-[1px]"
+          />
           
-          {/* Sparkle effects */}
-          <div className="sparkle-1 absolute w-4 h-4 bg-white rounded-full opacity-0 top-5 right-5"></div>
-          <div className="sparkle-2 absolute w-3 h-3 bg-white rounded-full opacity-0 bottom-10 left-0"></div>
-          <div className="sparkle-3 absolute w-2 h-2 bg-white rounded-full opacity-0 top-1/2 right-0"></div>
-          <div className="sparkle-4 absolute w-5 h-5 bg-white rounded-full opacity-0 bottom-5 right-10"></div>
+          <motion.div
+            animate={{ 
+              opacity: [0, 1, 0],
+              scale: [0.5, 1.2, 0.5]
+            }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 1 }}
+            className="absolute w-2 h-2 bottom-10 left-5 rounded-full bg-white blur-[1px]"
+          />
           
-          {/* Floating shapes */}
-          <div className="absolute -top-4 -right-4 w-10 h-10 bg-purple-500 rounded-full opacity-80 animate-float-slow"></div>
-          <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-cyan-500 rounded-full opacity-80 animate-float-medium"></div>
-          <div className="absolute top-1/2 -right-8 w-8 h-8 bg-violet-500 rounded-full opacity-80 animate-float-fast animate-pulse-slow"></div>
-          <div className="absolute -top-8 left-1/4 w-5 h-5 bg-pink-400 rounded-full opacity-70 animate-float-medium"></div>
-          <div className="absolute -bottom-6 right-1/4 w-7 h-7 bg-blue-400 rounded-full opacity-70 animate-float-slow"></div>
+          <motion.div
+            animate={{ 
+              opacity: [0, 1, 0],
+              scale: [0.5, 1.2, 0.5]
+            }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 2 }}
+            className="absolute w-2 h-2 top-1/3 left-10 rounded-full bg-white blur-[1px]"
+          />
         </div>
       </motion.div>
     </motion.div>
