@@ -1,8 +1,347 @@
 @import url("https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=VT323&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --hacker-green: #39ff14;
+  --hacker-green-dim: rgba(57, 255, 20, 0.7);
+  --matrix-green: #00ff41;
+  --terminal-black: #0c0c0c;
+  --terminal-dark: #111;
+  --cyber-blue: #00b4d8;
+  --cyber-red: #ff2a6d;
+  --console-font: 'Source Code Pro', 'Fira Code', monospace;
+  --glitch-shadow: 0 0 10px rgba(57, 255, 20, 0.7), 0 0 20px rgba(57, 255, 20, 0.5);
+}
+
+* {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' style='fill:none;stroke:%2339ff14;stroke-width:2px'><path d='M8,2 L8,14 M2,8 L14,8'/></svg>") 8 8, auto;
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hacker-green) var(--terminal-black);
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--terminal-black);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--hacker-green);
+  border-radius: 2px;
+}
+
+/* Terminal blinking cursor */
+.terminal-cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Glitch effect */
+.glitch {
+  position: relative;
+  animation: glitch-skew 1s infinite linear alternate-reverse;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00c1;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+  animation: glitch-anim2 1s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(31px, 9999px, 94px, 0);
+    transform: skew(0.85deg);
+  }
+  5% {
+    clip: rect(70px, 9999px, 71px, 0);
+    transform: skew(0.42deg);
+  }
+  10% {
+    clip: rect(7px, 9999px, 90px, 0);
+    transform: skew(0.6deg);
+  }
+  15% {
+    clip: rect(73px, 9999px, 17px, 0);
+    transform: skew(0.78deg);
+  }
+  20% {
+    clip: rect(67px, 9999px, 15px, 0);
+    transform: skew(0.33deg);
+  }
+  25% {
+    clip: rect(10px, 9999px, 13px, 0);
+    transform: skew(0.8deg);
+  }
+  30% {
+    clip: rect(53px, 9999px, 10px, 0);
+    transform: skew(0.63deg);
+  }
+  35% {
+    clip: rect(89px, 9999px, 55px, 0);
+    transform: skew(0.26deg);
+  }
+  40% {
+    clip: rect(10px, 9999px, 44px, 0);
+    transform: skew(0.55deg);
+  }
+  45% {
+    clip: rect(14px, 9999px, 96px, 0);
+    transform: skew(0.75deg);
+  }
+  50% {
+    clip: rect(93px, 9999px, 72px, 0);
+    transform: skew(0.16deg);
+  }
+  55% {
+    clip: rect(87px, 9999px, 36px, 0);
+    transform: skew(0.76deg);
+  }
+  60% {
+    clip: rect(3px, 9999px, 7px, 0);
+    transform: skew(0.58deg);
+  }
+  65% {
+    clip: rect(30px, 9999px, 73px, 0);
+    transform: skew(0.21deg);
+  }
+  70% {
+    clip: rect(47px, 9999px, 25px, 0);
+    transform: skew(0.92deg);
+  }
+  75% {
+    clip: rect(94px, 9999px, 3px, 0);
+    transform: skew(0.2deg);
+  }
+  80% {
+    clip: rect(32px, 9999px, 41px, 0);
+    transform: skew(0.4deg);
+  }
+  85% {
+    clip: rect(39px, 9999px, 37px, 0);
+    transform: skew(0.85deg);
+  }
+  90% {
+    clip: rect(8px, 9999px, 3px, 0);
+    transform: skew(0.64deg);
+  }
+  95% {
+    clip: rect(99px, 9999px, 100px, 0);
+    transform: skew(0.7deg);
+  }
+  100% {
+    clip: rect(76px, 9999px, 25px, 0);
+    transform: skew(0.97deg);
+  }
+}
+
+@keyframes glitch-anim2 {
+  0% {
+    clip: rect(29px, 9999px, 9px, 0);
+    transform: skew(0.05deg);
+  }
+  5% {
+    clip: rect(89px, 9999px, 36px, 0);
+    transform: skew(0.16deg);
+  }
+  10% {
+    clip: rect(34px, 9999px, 59px, 0);
+    transform: skew(0.85deg);
+  }
+  15% {
+    clip: rect(91px, 9999px, 85px, 0);
+    transform: skew(0.93deg);
+  }
+  20% {
+    clip: rect(7px, 9999px, 98px, 0);
+    transform: skew(0.03deg);
+  }
+  25% {
+    clip: rect(48px, 9999px, 46px, 0);
+    transform: skew(0.2deg);
+  }
+  30% {
+    clip: rect(54px, 9999px, 45px, 0);
+    transform: skew(0.26deg);
+  }
+  35% {
+    clip: rect(42px, 9999px, 25px, 0);
+    transform: skew(0.56deg);
+  }
+  40% {
+    clip: rect(20px, 9999px, 94px, 0);
+    transform: skew(0.41deg);
+  }
+  45% {
+    clip: rect(22px, 9999px, 18px, 0);
+    transform: skew(0.08deg);
+  }
+  50% {
+    clip: rect(18px, 9999px, 39px, 0);
+    transform: skew(0.76deg);
+  }
+  55% {
+    clip: rect(86px, 9999px, 73px, 0);
+    transform: skew(0.67deg);
+  }
+  60% {
+    clip: rect(67px, 9999px, 97px, 0);
+    transform: skew(0.72deg);
+  }
+  65% {
+    clip: rect(7px, 9999px, 28px, 0);
+    transform: skew(0.95deg);
+  }
+  70% {
+    clip: rect(79px, 9999px, 67px, 0);
+    transform: skew(0.36deg);
+  }
+  75% {
+    clip: rect(42px, 9999px, 33px, 0);
+    transform: skew(0.62deg);
+  }
+  80% {
+    clip: rect(75px, 9999px, 61px, 0);
+    transform: skew(0.93deg);
+  }
+  85% {
+    clip: rect(60px, 9999px, 78px, 0);
+    transform: skew(0.05deg);
+  }
+  90% {
+    clip: rect(67px, 9999px, 51px, 0);
+    transform: skew(0.58deg);
+  }
+  95% {
+    clip: rect(10px, 9999px, 56px, 0);
+    transform: skew(0.24deg);
+  }
+  100% {
+    clip: rect(23px, 9999px, 92px, 0);
+    transform: skew(0.3deg);
+  }
+}
+
+@keyframes glitch-skew {
+  0% {
+    transform: skew(-0.5deg);
+  }
+  10% {
+    transform: skew(1deg);
+  }
+  20% {
+    transform: skew(-1deg);
+  }
+  30% {
+    transform: skew(0.5deg);
+  }
+  40% {
+    transform: skew(-0.5deg);
+  }
+  50% {
+    transform: skew(0.7deg);
+  }
+  60% {
+    transform: skew(0deg);
+  }
+  70% {
+    transform: skew(0.5deg);
+  }
+  80% {
+    transform: skew(-0.3deg);
+  }
+  90% {
+    transform: skew(0.3deg);
+  }
+  100% {
+    transform: skew(-0.5deg);
+  }
+}
+
+/* Panel styles */
+.neo-panel {
+  background: var(--terminal-dark);
+  border: 1px solid var(--hacker-green);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.neo-panel:hover {
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.5), 0 0 30px rgba(57, 255, 20, 0.3);
+}
+
+.neo-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
+  animation: scanner 3s linear infinite;
+}
+
+@keyframes scanner {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Terminal typing effect */
+.typing-effect {
+  overflow: hidden;
+  border-right: 2px solid var(--hacker-green);
+  white-space: nowrap;
+  margin: 0;
+  letter-spacing: 0.1em;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--hacker-green) }
+}
 
 .cursive {
   font-family: "Cedarville Cursive", cursive;
@@ -65,6 +404,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .cursor {
@@ -816,4 +1156,438 @@ html {
 .progressive-load.loaded {
   opacity: 1;
   transform: translateY(0);
+}
+
+:root {
+  --hacker-green: #39ff14;
+  --hacker-blue: #00ffff;
+  --hacker-red: #ff3131;
+  --terminal-bg: #0a0a0a;
+  --terminal-text: #39ff14;
+}
+
+body {
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text);
+  font-family: 'Fira Code', monospace;
+}
+
+/* Terminal Window Styles */
+.terminal-window {
+  background: var(--terminal-bg);
+  border: 1px solid var(--hacker-green);
+  border-radius: 6px;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-header {
+  background: #1a1a1a;
+  padding: 8px;
+  border-bottom: 1px solid var(--hacker-green);
+}
+
+.terminal-title {
+  color: var(--hacker-green);
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+}
+
+/* Matrix Rain Effect */
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Glitch Effects */
+.glitch-text {
+  position: relative;
+  animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 2px 0 var(--hacker-red), -2px 0 var(--hacker-blue);
+  }
+  25% {
+    text-shadow: -2px 0 var(--hacker-red), 2px 0 var(--hacker-blue);
+  }
+  50% {
+    text-shadow: 2px 2px var(--hacker-red), -2px -2px var(--hacker-blue);
+  }
+  75% {
+    text-shadow: -2px 2px var(--hacker-red), 2px -2px var(--hacker-blue);
+  }
+  100% {
+    text-shadow: 2px 0 var(--hacker-red), -2px 0 var(--hacker-blue);
+  }
+}
+
+/* Terminal Typing Animation */
+.typing {
+  border-right: 2px solid var(--hacker-green);
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* Scanlines Effect */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Hacker Button Styles */
+.hacker-button {
+  background: transparent;
+  border: 1px solid var(--hacker-green);
+  color: var(--hacker-green);
+  padding: 0.5rem 1rem;
+  font-family: 'Fira Code', monospace;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hacker-button:hover {
+  background: var(--hacker-green);
+  color: var(--terminal-bg);
+  box-shadow: 0 0 20px var(--hacker-green);
+}
+
+.hacker-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(57, 255, 20, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.hacker-button:hover::before {
+  left: 100%;
+}
+
+/* Terminal Command Output */
+.command-output {
+  font-family: 'Fira Code', monospace;
+  white-space: pre-wrap;
+  color: var(--hacker-green);
+}
+
+.command-prompt {
+  color: var(--hacker-blue);
+}
+
+.command-input {
+  background: transparent;
+  border: none;
+  color: var(--hacker-green);
+  font-family: 'Fira Code', monospace;
+  outline: none;
+  width: 100%;
+}
+
+/* System Info Panel */
+.system-info {
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid var(--hacker-green);
+  padding: 1rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.system-info-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
+
+.system-info-label {
+  color: var(--hacker-blue);
+}
+
+.system-info-value {
+  color: var(--hacker-green);
+}
+
+/* Loading Animation */
+.loading-bar {
+  height: 2px;
+  background: var(--hacker-green);
+  animation: loading 2s infinite;
+}
+
+@keyframes loading {
+  0% { width: 0; }
+  50% { width: 100%; }
+  100% { width: 0; }
+}
+
+/* ASCII Art Container */
+.ascii-art {
+  font-family: 'VT323', monospace;
+  white-space: pre;
+  color: var(--hacker-green);
+  line-height: 1;
+}
+
+/* Hacker Card */
+.hacker-card {
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid var(--hacker-green);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hacker-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(57, 255, 20, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .terminal-window {
+    margin: 1rem;
+  }
+  
+  .system-info {
+    font-size: 0.9rem;
+  }
+  
+  .ascii-art {
+    font-size: 0.8rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion) {
+  .glitch-text,
+  .hacker-button::before,
+  .loading-bar,
+  .hacker-card::before {
+    animation: none;
+  }
+}
+
+/* 3D Profile Picture Styles */
+.profile-3d-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.profile-3d-canvas {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* Fallback image styles with animation effects */
+.glitch-effect {
+  animation: glitch 0.5s infinite;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: translate(1px, -1px);
+    filter: hue-rotate(90deg) brightness(1.1);
+  }
+  50% {
+    transform: translate(-1px, 1px);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: translate(1px, 1px);
+    filter: hue-rotate(270deg) brightness(0.9);
+  }
+  100% {
+    transform: translate(0);
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+/* Ensure Three.js canvas is visible */
+canvas {
+  display: block !important;
+}
+
+/* Add specific styles for profile pictures */
+.auth-profile-pic canvas,
+.profile-3d-main canvas {
+  border-radius: 50%;
+}
+
+/* Mini globe container styles */
+.mini-globe-container {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Profile picture globe integration */
+.password-profile-pic {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.password-profile-pic:hover {
+  transform: scale(1.05);
+}
+
+.password-profile-pic canvas {
+  border-radius: 50%;
+}
+
+/* Styles for interactive password cracker globe */
+.password-globe-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.password-globe-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Glowing effect around 3D elements */
+.globe-glow {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.3) 0%, rgba(57, 255, 20, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Custom scrollbar for the password cracker */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--hacker-green-dim);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--hacker-green);
+}
+
+/* Add specific styles for profile pictures */
+.auth-profile-pic canvas,
+.profile-3d-main canvas {
+  border-radius: 50%;
+}
+
+/* Mini globe container styles */
+.mini-globe-container {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Main interactive globe container */
+.interactive-globe {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.interactive-globe canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* Glowing profile on hover */
+.relative.group:hover .absolute.-inset-1 {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    filter: blur(8px);
+    opacity: 0.2;
+  }
+  50% {
+    filter: blur(12px);
+    opacity: 0.3;
+  }
+  100% {
+    filter: blur(8px);
+    opacity: 0.2;
+  }
 }

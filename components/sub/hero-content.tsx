@@ -18,7 +18,7 @@ export const HeroContent = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const fullText = "Aditi Singh";
+  const fullText = "YASHIKA KAINTH";
   const typingSpeed = 150;
   const eraseSpeed = 100;
   const pauseDuration = 2000;
@@ -37,6 +37,9 @@ export const HeroContent = () => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!profileElement) return;
       
+      // Only process mouse movements when the profile is hovered
+      if (!isHovered) return;
+      
       const { left, top, width, height } = profileElement.getBoundingClientRect();
       const x = e.clientX - left;
       const y = e.clientY - top;
@@ -51,6 +54,9 @@ export const HeroContent = () => {
       
       // Apply smooth 3D rotation with dynamic strength based on distance
       const rotationStrength = Math.min(Math.sqrt(distanceX ** 2 + distanceY ** 2) * 7, 10);
+      
+      // Prevent default behavior to avoid scroll interference
+      e.preventDefault();
       
       profileElement.style.transform = `
         perspective(1000px) 
@@ -74,13 +80,13 @@ export const HeroContent = () => {
       resetTransform();
     };
     
-    // Add event listeners
-    document.addEventListener('mousemove', handleMouseMove);
+    // Add event listeners - only to the profile element, not the entire document
+    profileElement?.addEventListener('mousemove', handleMouseMove);
     profileElement?.addEventListener('mouseenter', handleMouseEnter);
     profileElement?.addEventListener('mouseleave', handleMouseLeave);
     
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
+      profileElement?.removeEventListener('mousemove', handleMouseMove);
       profileElement?.removeEventListener('mouseenter', handleMouseEnter);
       profileElement?.removeEventListener('mouseleave', handleMouseLeave);
     };
@@ -305,7 +311,7 @@ export const HeroContent = () => {
           >
             <Image
               src="/profile pic.jpg"
-              alt="Aditi Singh"
+              alt="YASHIKA KAINTH"
               width={300}
               height={300}
               className="rounded-full object-cover w-full h-full"

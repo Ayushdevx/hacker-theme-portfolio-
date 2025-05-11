@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const siteConfig: Metadata = {
-  title: "Aditi Singh | Portfolio",
+  title: "YASHIKA KAINTH| Portfolio",
   description: "Full Stack Web Developer & Computer Science Student at HBTU Kanpur",
   keywords: [
     "reactjs",
@@ -23,7 +23,7 @@ export const siteConfig: Metadata = {
     "node.js",
   ] as Array<string>,
   authors: {
-    name: "Aditi Singh",
+    name: "YASHIKA KAINTH",
     url: "https://github.com/IamAditiSingh08",
   },
 } as const;
