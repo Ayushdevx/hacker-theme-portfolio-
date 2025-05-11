@@ -769,8 +769,8 @@ const HackerTerminal = () => {
     if (isCode) {
       // Format as code
       const output = (
-        <div className="font-mono text-xs overflow-auto max-h-60">
-          <pre className="language-javascript whitespace-pre-wrap">
+        <div className="font-mono text-[10px] xs:text-xs overflow-auto max-h-40 sm:max-h-60 w-full">
+          <pre className="language-javascript whitespace-pre-wrap break-all sm:break-normal">
             <code>{node.content}</code>
           </pre>
         </div>
@@ -780,7 +780,7 @@ const HackerTerminal = () => {
       // Format as markdown
       const lines = node.content.split('\n');
       const output = (
-        <div className="font-mono text-xs overflow-auto max-h-60">
+        <div className="font-mono text-[10px] xs:text-xs overflow-auto max-h-40 sm:max-h-60 w-full">
           {lines.map((line, i) => {
             if (line.startsWith('# ')) {
               return <h3 key={i} className="text-blue-400 font-bold">{line.substring(2)}</h3>;
@@ -1218,22 +1218,22 @@ const HackerTerminal = () => {
 
   return (
     <div className="neo-panel h-full flex flex-col">
-      <div className="flex justify-between items-center border-b border-green-500/30 p-2">
+      <div className="flex justify-between items-center border-b border-green-500/30 p-1 sm:p-2">
         <div className="flex items-center">
-          <FaTerminal className="text-green-500 mr-2" />
-          <span className="text-green-400 font-mono">{terminalTitle}</span>
+          <FaTerminal className="text-green-500 mr-1 sm:mr-2 text-sm sm:text-base" />
+          <span className="text-green-400 font-mono text-xs sm:text-sm">{terminalTitle}</span>
         </div>
         <div className="flex space-x-1">
-          <div className="w-3 h-3 rounded-full bg-red-500"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+          <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
         </div>
       </div>
       
       <div 
         ref={terminalRef}
         id="hacker-terminal-component"
-        className={`font-mono text-sm h-full overflow-y-auto p-4 ${isGlitching ? 'glitch' : ''} no-auto-scroll terminal-container`}
+        className={`font-mono text-xs sm:text-sm h-full overflow-y-auto p-2 sm:p-4 ${isGlitching ? 'glitch' : ''} no-auto-scroll terminal-container`}
         style={{ 
           scrollBehavior: 'smooth',
           scrollMarginTop: '100vh',
@@ -1246,12 +1246,12 @@ const HackerTerminal = () => {
           <div key={i} className="mb-1">
             {cmd.input && (
               <div className="flex items-start">
-                <span className="text-blue-400 mr-2">{accessLevel === 'root' ? '# ' : '$ '}</span>
-                <span>{cmd.input}</span>
+                <span className="text-blue-400 mr-1 sm:mr-2">{accessLevel === 'root' ? '# ' : '$ '}</span>
+                <span className="break-all sm:break-normal">{cmd.input}</span>
               </div>
             )}
             {cmd.output && (
-              <div className={`ml-4 ${cmd.isError ? 'text-red-400' : ''}`}>
+              <div className={`ml-2 sm:ml-4 text-wrap break-all sm:break-normal ${cmd.isError ? 'text-red-400' : ''}`}>
                 {cmd.isHtml ? cmd.output : <span className="whitespace-pre-wrap">{cmd.output}</span>}
               </div>
             )}
@@ -1260,11 +1260,11 @@ const HackerTerminal = () => {
         
         {bootComplete && !isBusy && (
           <div className="flex items-center mt-1">
-            <span className="text-blue-400 mr-2">{accessLevel === 'root' ? '# ' : '$ '}</span>
+            <span className="text-blue-400 mr-1 sm:mr-2">{accessLevel === 'root' ? '# ' : '$ '}</span>
             <input
               ref={inputRef}
               type="text"
-              className="flex-1 bg-transparent border-none outline-none text-green-400"
+              className="flex-1 bg-transparent border-none outline-none text-green-400 text-xs sm:text-sm"
               value={userInput}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}

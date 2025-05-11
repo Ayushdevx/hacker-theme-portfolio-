@@ -417,20 +417,20 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
         touchAction: 'none',
       }}>
       <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-        <div className="flex items-center">
-          <FaNetworkWired className="text-green-500 mr-2" />
+        <div className="flex items-center justify-center w-full md:w-auto mb-2 md:mb-0">
+          <FaNetworkWired className="text-green-500 mr-2 text-lg" />
           <GlitchText 
             text="NETWORK SCANNER" 
-            className="text-xl font-mono text-green-500 font-bold"
+            className="text-lg sm:text-xl font-mono text-green-500 font-bold"
             intensity={3}
           />
         </div>
         
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center w-full md:justify-end gap-2">
           <select 
             value={scanType} 
             onChange={(e) => setScanType(e.target.value as 'quick' | 'full' | 'stealth')}
-            className="bg-black text-green-400 border border-green-500/30 rounded px-2 py-1 text-sm font-mono"
+            className="bg-black text-green-400 border border-green-500/30 rounded px-2 py-1 text-xs sm:text-sm font-mono"
             disabled={scanning}
           >
             <option value="quick">Quick Scan</option>
@@ -442,7 +442,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
             type="text"
             value={target}
             onChange={(e) => setTarget(e.target.value)}
-            className="bg-black text-green-400 border border-green-500/30 rounded px-2 py-1 text-sm font-mono w-40"
+            className="bg-black text-green-400 border border-green-500/30 rounded px-2 py-1 text-xs sm:text-sm font-mono w-28 sm:w-40"
             placeholder="Target range"
             disabled={scanning}
           />
@@ -450,7 +450,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           <button
             onClick={startScan}
             disabled={scanning}
-            className={`px-3 py-1 rounded text-sm font-mono ${scanning ? 'bg-gray-700 text-gray-400' : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'}`}
+            className={`px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-mono w-full sm:w-auto mt-2 sm:mt-0 ${scanning ? 'bg-gray-700 text-gray-400' : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'}`}
           >
             {scanning ? 'Scanning...' : 'Start Scan'}
           </button>
@@ -459,7 +459,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
       
       {/* Network Visualization */}
       <div className="mb-4 border border-green-500/30 rounded bg-black p-2">
-        <canvas id="network-canvas" width="800" height="200" className="w-full"></canvas>
+        <canvas id="network-canvas" width="800" height="150" className="w-full h-auto"></canvas>
       </div>
       
       {/* Scanning Progress */}
@@ -482,7 +482,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {/* Main results table */}
         <div className="col-span-1 md:col-span-2 border border-green-500/30 bg-black/50 rounded p-2">
-          <div className="text-green-400 font-mono text-sm mb-2 flex items-center">
+          <div className="text-green-400 font-mono text-xs sm:text-sm mb-2 flex flex-wrap items-center">
             <span>SCAN RESULTS</span>
             {results.length > 0 && (
               <span className="ml-auto">
@@ -496,16 +496,16 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
             )}
           </div>
           
-          <div className="overflow-y-auto max-h-64 custom-scrollbar">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto overflow-y-auto max-h-48 sm:max-h-64 custom-scrollbar">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-green-500/30 text-xs">
-                  <th className="text-left py-1 px-2">HOST</th>
-                  <th className="text-left py-1 px-2">PORT</th>
-                  <th className="text-left py-1 px-2">SERVICE</th>
-                  <th className="text-left py-1 px-2">STATUS</th>
-                  <th className="text-left py-1 px-2 hidden md:table-cell">OS</th>
-                  <th className="text-left py-1 px-2 hidden md:table-cell">PING</th>
+                  <th className="text-left py-1 px-1 sm:px-2">HOST</th>
+                  <th className="text-left py-1 px-1 sm:px-2">PORT</th>
+                  <th className="text-left py-1 px-1 sm:px-2">SERVICE</th>
+                  <th className="text-left py-1 px-1 sm:px-2">STATUS</th>
+                  <th className="text-left py-1 px-1 sm:px-2 hidden md:table-cell">OS</th>
+                  <th className="text-left py-1 px-1 sm:px-2 hidden md:table-cell">PING</th>
                 </tr>
               </thead>
               <tbody>
@@ -517,15 +517,15 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
                       ${result.isVulnerable ? 'text-red-400' : ''}`}
                     onClick={() => setSelectedIP(result.ip)}
                   >
-                    <td className="py-1 px-2 font-mono truncate max-w-[150px]">
+                    <td className="py-1 px-1 sm:px-2 font-mono truncate max-w-[80px] sm:max-w-[150px]">
                       {result.hostname || result.ip}
                     </td>
-                    <td className="py-1 px-2 font-mono">{result.port}</td>
-                    <td className="py-1 px-2 font-mono flex items-center">
+                    <td className="py-1 px-1 sm:px-2 font-mono">{result.port}</td>
+                    <td className="py-1 px-1 sm:px-2 font-mono flex items-center">
                       <span className="mr-1">{getServiceIcon(result.service)}</span>
-                      {result.service}
+                      <span className="truncate max-w-[60px] sm:max-w-none">{result.service}</span>
                     </td>
-                    <td className="py-1 px-2">
+                    <td className="py-1 px-1 sm:px-2">
                       <span className={`flex items-center ${
                         result.status === 'open' 
                           ? (result.isVulnerable ? 'text-red-500' : 'text-yellow-500')
@@ -537,8 +537,8 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
                         {result.status.toUpperCase()}
                       </span>
                     </td>
-                    <td className="py-1 px-2 hidden md:table-cell text-xs">{result.os || 'Unknown'}</td>
-                    <td className="py-1 px-2 hidden md:table-cell text-xs">{result.ping ? `${result.ping}ms` : '-'}</td>
+                    <td className="py-1 px-1 sm:px-2 hidden md:table-cell text-xs">{result.os || 'Unknown'}</td>
+                    <td className="py-1 px-1 sm:px-2 hidden md:table-cell text-xs">{result.ping ? `${result.ping}ms` : '-'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -550,7 +550,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
         <div className="col-span-1 border border-green-500/30 bg-black/50 rounded p-2">
           {selectedIP ? (
             <>
-              <div className="text-green-400 font-mono text-sm mb-2">TARGET DETAILS</div>
+              <div className="text-green-400 font-mono text-xs sm:text-sm mb-2">TARGET DETAILS</div>
               
               {(() => {
                 const hostResults = results.filter(r => r.ip === selectedIP);
@@ -565,19 +565,19 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
                     <div className="mb-3">
                       <div className="grid grid-cols-3 gap-1">
                         <div className="text-xs text-gray-500">HOSTNAME:</div>
-                        <div className="col-span-2 text-sm text-green-400">{firstResult.hostname || 'Unknown'}</div>
+                        <div className="col-span-2 text-xs sm:text-sm text-green-400 break-all">{firstResult.hostname || 'Unknown'}</div>
                       </div>
                       <div className="grid grid-cols-3 gap-1">
                         <div className="text-xs text-gray-500">IP:</div>
-                        <div className="col-span-2 text-sm text-green-400">{firstResult.ip}</div>
+                        <div className="col-span-2 text-xs sm:text-sm text-green-400">{firstResult.ip}</div>
                       </div>
                       <div className="grid grid-cols-3 gap-1">
                         <div className="text-xs text-gray-500">OS:</div>
-                        <div className="col-span-2 text-sm text-green-400">{firstResult.os || 'Unknown'}</div>
+                        <div className="col-span-2 text-xs sm:text-sm text-green-400">{firstResult.os || 'Unknown'}</div>
                       </div>
                       <div className="grid grid-cols-3 gap-1">
                         <div className="text-xs text-gray-500">PING:</div>
-                        <div className="col-span-2 text-sm text-green-400">{firstResult.ping ? `${firstResult.ping}ms` : 'N/A'}</div>
+                        <div className="col-span-2 text-xs sm:text-sm text-green-400">{firstResult.ping ? `${firstResult.ping}ms` : 'N/A'}</div>
                       </div>
                     </div>
                     

@@ -292,14 +292,13 @@ const EncryptionTool = ({ className = "" }: EncryptionToolProps) => {
     setStrength(calculateStrength(output, method));
     setOutput(output);
   };
-
   return (
-    <div className={`hacker-card max-w-4xl mx-auto my-8 ${className}`}>
-      <div className="flex justify-between items-center mb-4">
-        <GlitchText text="Encryption Tool" className="text-2xl" />
-        <div className="flex gap-4">
+    <div className={`hacker-card max-w-4xl mx-auto my-4 sm:my-8 ${className}`}>
+      <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mb-3 sm:mb-4 gap-2 xs:gap-0">
+        <GlitchText text="Encryption Tool" className="text-xl sm:text-2xl" />
+        <div className="flex flex-wrap gap-2 sm:gap-4 w-full xs:w-auto">
           <select 
-            className="hacker-button bg-black"
+            className="hacker-button bg-black text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-1.5"
             value={method}
             onChange={(e) => setMethod(e.target.value)}
           >
@@ -308,7 +307,7 @@ const EncryptionTool = ({ className = "" }: EncryptionToolProps) => {
             ))}
           </select>
           <select
-            className="hacker-button bg-black"
+            className="hacker-button bg-black text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-1.5"
             value={mode}
             onChange={(e) => setMode(e.target.value as 'encrypt' | 'decrypt')}
           >
@@ -318,28 +317,28 @@ const EncryptionTool = ({ className = "" }: EncryptionToolProps) => {
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-3 sm:mb-4">
         <input
           type="text"
           placeholder="Enter key (optional)"
-          className="w-full p-2 bg-black border border-green-500 text-green-500 mb-2"
+          className="w-full p-1.5 sm:p-2 bg-black border border-green-500 text-green-500 mb-2 text-xs sm:text-sm"
           value={key}
           onChange={(e) => setKey(e.target.value)}
         />
         <textarea
           placeholder={`Enter text to ${mode}...`}
-          className="w-full p-2 bg-black border border-green-500 text-green-500 h-32"
+          className="w-full p-1.5 sm:p-2 bg-black border border-green-500 text-green-500 h-24 sm:h-32 text-xs sm:text-sm"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
       </div>
 
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-green-400">Encryption Strength</span>
-          <span className="text-yellow-400">{strength}%</span>
+      <div className="mb-3 sm:mb-4">
+        <div className="flex justify-between items-center mb-1 sm:mb-2">
+          <span className="text-green-400 text-xs sm:text-sm">Encryption Strength</span>
+          <span className="text-yellow-400 text-xs sm:text-sm">{strength}%</span>
         </div>
-        <div className="h-2 bg-black border border-green-500/20 rounded-full overflow-hidden">
+        <div className="h-1.5 sm:h-2 bg-black border border-green-500/20 rounded-full overflow-hidden">
           <div 
             className="h-full bg-green-500 animate-pulse"
             style={{ width: `${strength}%` }}
@@ -348,30 +347,30 @@ const EncryptionTool = ({ className = "" }: EncryptionToolProps) => {
       </div>
 
       <button 
-        className="hacker-button w-full mb-4"
+        className="hacker-button w-full mb-3 sm:mb-4 text-xs sm:text-sm py-1.5 sm:py-2"
         onClick={processText}
         disabled={!input || processing}
       >
         {mode === 'encrypt' ? 'Encrypt' : 'Decrypt'}
       </button>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {results.map((result, index) => (
-          <div key={index} className="border border-green-500/20 p-4 rounded">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-blue-400">{result.method}</span>
-              <span className="text-yellow-400">{result.timestamp}</span>
+          <div key={index} className="border border-green-500/20 p-2 sm:p-4 rounded">
+            <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mb-2 gap-1 xs:gap-0">
+              <span className="text-blue-400 text-xs sm:text-sm">{result.method}</span>
+              <span className="text-yellow-400 text-[10px] sm:text-xs">{result.timestamp}</span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 xs:gap-4">
               <div>
-                <h3 className="text-sm text-green-500 mb-1">Input:</h3>
-                <pre className="bg-black/50 p-2 rounded overflow-x-auto">
+                <h3 className="text-xs text-green-500 mb-1">Input:</h3>
+                <pre className="bg-black/50 p-1.5 sm:p-2 rounded overflow-x-auto text-[10px] sm:text-xs">
                   {result.input}
                 </pre>
               </div>
               <div>
-                <h3 className="text-sm text-green-500 mb-1">Output:</h3>
-                <pre className="bg-black/50 p-2 rounded overflow-x-auto">
+                <h3 className="text-xs text-green-500 mb-1">Output:</h3>
+                <pre className="bg-black/50 p-1.5 sm:p-2 rounded overflow-x-auto text-[10px] sm:text-xs">
                   {result.output}
                 </pre>
               </div>

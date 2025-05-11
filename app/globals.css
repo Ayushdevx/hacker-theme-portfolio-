@@ -6,6 +6,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom utility classes for responsive design */
+@media (min-width: 475px) {
+  .xs\:flex-row {
+    flex-direction: row;
+  }
+  .xs\:mb-0 {
+    margin-bottom: 0;
+  }
+  .xs\:w-auto {
+    width: auto;
+  }
+  .xs\:justify-start {
+    justify-content: flex-start;
+  }
+}
+
 :root {
   --hacker-green: #39ff14;
   --hacker-green-dim: rgba(57, 255, 20, 0.7);

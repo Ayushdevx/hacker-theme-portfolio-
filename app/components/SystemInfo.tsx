@@ -175,7 +175,7 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
   return (
     <div 
       id="system-info-component"
-      className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} system-info-component no-auto-scroll`}
+      className={`neo-panel p-2 sm:p-4 ${isGlitching ? 'glitch' : ''} ${className} system-info-component no-auto-scroll`}
       style={{
         scrollMarginTop: '100vh',
         scrollSnapAlign: 'none',
@@ -183,84 +183,84 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
         touchAction: 'none',
       }}
     >
-      <div className="mb-4 flex items-center">
-        <FaServer className="text-green-500 mr-2" />
+      <div className="mb-3 sm:mb-4 flex items-center">
+        <FaServer className="text-green-500 mr-2 text-lg" />
         <GlitchText
           text="SYSTEM INFORMATION"
-          className="text-xl font-mono text-green-500 font-bold"
+          className="text-lg sm:text-xl font-mono text-green-500 font-bold"
           intensity={3}
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
         {/* System specs */}
-        <div className="border border-green-500/30 bg-black/50 rounded p-2">
-          <div className="text-green-400 font-mono text-sm mb-2">SYSTEM SPECS</div>
+        <div className="border border-green-500/30 bg-black/50 rounded p-1.5 sm:p-2">
+          <div className="text-green-400 font-mono text-xs sm:text-sm mb-2">SYSTEM SPECS</div>
           
-          <div className="text-xs space-y-2">
+          <div className="text-[10px] xs:text-xs space-y-1.5 sm:space-y-2">
             <div className="flex items-center">
-              <FaLinux className="mr-2 text-blue-400" />
+              <FaLinux className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">OS</div>
-                <div className="text-green-400">Kali Linux 6.2.0</div>
+                <div className="text-green-400 truncate w-full max-w-[180px] sm:max-w-none">Kali Linux 6.2.0</div>
               </div>
             </div>
             
             <div className="flex items-center">
-              <FaMicrochip className="mr-2 text-blue-400" />
+              <FaMicrochip className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">CPU</div>
-                <div className="text-green-400">AMD Ryzen 9 5950X (16 cores)</div>
+                <div className="text-green-400 truncate w-full max-w-[180px] sm:max-w-none">AMD Ryzen 9 5950X</div>
               </div>
             </div>
             
             <div className="flex items-center">
-              <FaMemory className="mr-2 text-blue-400" />
+              <FaMemory className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">Memory</div>
-                <div className="text-green-400">{Math.round(memory.total / 1024)}GB DDR4 3600MHz</div>
+                <div className="text-green-400 truncate">{Math.round(memory.total / 1024)}GB DDR4</div>
               </div>
             </div>
             
             <div className="flex items-center">
-              <FaHdd className="mr-2 text-blue-400" />
+              <FaHdd className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">Storage</div>
-                <div className="text-green-400">2TB NVMe SSD + 8TB RAID Array</div>
+                <div className="text-green-400 truncate w-full max-w-[180px] sm:max-w-none">2TB NVMe + 8TB RAID</div>
               </div>
             </div>
             
             <div className="flex items-center">
-              <FaNetworkWired className="mr-2 text-blue-400" />
+              <FaNetworkWired className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">Network</div>
-                <div className="text-green-400">10Gbps Fiber + VPN</div>
+                <div className="text-green-400 truncate">10Gbps Fiber + VPN</div>
               </div>
             </div>
             
             <div className="flex items-center">
-              <FaUserSecret className="mr-2 text-blue-400" />
+              <FaUserSecret className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">User</div>
-                <div className="text-green-400">root@hackersystem</div>
+                <div className="text-green-400 truncate">root@hackersystem</div>
               </div>
             </div>
             
             <div className="flex items-center">
-              <FaShieldAlt className="mr-2 text-blue-400" />
+              <FaShieldAlt className="mr-1.5 sm:mr-2 text-blue-400 text-xs sm:text-sm" />
               <div>
                 <div className="text-gray-400">Security Status</div>
-                <div className={`flex items-center ${
+                <div className={`flex items-center truncate ${
                   securityStatus === 'secure' ? 'text-green-400' : 
                   securityStatus === 'warning' ? 'text-yellow-400' : 
                   'text-red-400'
                 }`}>
                   {securityStatus === 'secure' ? (
-                    <><FaCheckCircle className="mr-1" size={12} /> System Secure</>
+                    <><FaCheckCircle className="mr-1" size={10} /> System Secure</>
                   ) : securityStatus === 'warning' ? (
-                    <><FaExclamationTriangle className="mr-1" size={12} /> Security Warning</>
+                    <><FaExclamationTriangle className="mr-1" size={10} /> Security Warning</>
                   ) : (
-                    <><FaExclamationTriangle className="mr-1" size={12} /> Security Breach</>
+                    <><FaExclamationTriangle className="mr-1" size={10} /> Security Breach</>
                   )}
                 </div>
               </div>
@@ -269,16 +269,16 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
         </div>
         
         {/* System usage */}
-        <div className="border border-green-500/30 bg-black/50 rounded p-2">
-          <div className="text-green-400 font-mono text-sm mb-2">SYSTEM USAGE</div>
+        <div className="border border-green-500/30 bg-black/50 rounded p-1.5 sm:p-2">
+          <div className="text-green-400 font-mono text-xs sm:text-sm mb-2">SYSTEM USAGE</div>
           
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-[10px] xs:text-xs mb-1">
                 <span className="text-gray-400">CPU Usage</span>
                 <span className="text-green-400">{cpu}%</span>
               </div>
-              <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div 
                   className={`h-full transition-all duration-300 ${
                     cpu < 30 ? 'bg-green-500' : 
@@ -291,11 +291,11 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
             </div>
             
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-[10px] xs:text-xs mb-1">
                 <span className="text-gray-400">Memory Usage</span>
-                <span className="text-green-400">{memory.percent}% ({Math.round(memory.used / 1024)}GB / {Math.round(memory.total / 1024)}GB)</span>
+                <span className="text-green-400">{memory.percent}% ({Math.round(memory.used / 1024)}GB)</span>
               </div>
-              <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div 
                   className={`h-full transition-all duration-300 ${
                     memory.percent < 50 ? 'bg-green-500' : 
@@ -308,11 +308,11 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
             </div>
             
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-[10px] xs:text-xs mb-1">
                 <span className="text-gray-400">Disk Usage</span>
                 <span className="text-green-400">{disk}%</span>
               </div>
-              <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div 
                   className={`h-full transition-all duration-300 ${
                     disk < 70 ? 'bg-green-500' : 
@@ -325,11 +325,11 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
             </div>
             
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-[10px] xs:text-xs mb-1">
                 <span className="text-gray-400">Network Traffic</span>
                 <span className="text-green-400">{networkTraffic} KB/s</span>
               </div>
-              <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 sm:h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-blue-500"
                   style={{ width: `${Math.min(Math.max(networkTraffic / 2, 10), 100)}%` }}
@@ -338,19 +338,19 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
             </div>
             
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-[10px] xs:text-xs mb-1">
                 <span className="text-gray-400">Uptime</span>
                 <span className="text-green-400">{uptime}</span>
               </div>
             </div>
             
             <div>
-              <div className="text-xs mb-1 text-gray-400">Running Services</div>
-              <div className="flex flex-wrap text-xs gap-1">
+              <div className="text-[10px] xs:text-xs mb-1 text-gray-400">Running Services</div>
+              <div className="flex flex-wrap text-[10px] xs:text-xs gap-1">
                 {runningProcesses.map((process, idx) => (
                   <div key={idx} className="bg-black/30 border border-green-500/30 rounded px-1 py-0.5 flex items-center">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 mr-1"></span>
-                    <span className="text-green-400">{process}</span>
+                    <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-green-500 mr-0.5 sm:mr-1"></span>
+                    <span className="text-green-400 truncate">{process}</span>
                   </div>
                 ))}
               </div>
@@ -360,19 +360,19 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
       </div>
       
       {/* System logs */}
-      <div className="border border-green-500/30 bg-black/50 rounded p-2">
-        <div className="flex justify-between items-center mb-2">
-          <div className="text-green-400 font-mono text-sm">SYSTEM LOGS</div>
+      <div className="border border-green-500/30 bg-black/50 rounded p-1.5 sm:p-2">
+        <div className="flex justify-between items-center mb-1 sm:mb-2">
+          <div className="text-green-400 font-mono text-xs sm:text-sm">SYSTEM LOGS</div>
           <div className="flex space-x-1">
-            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-            <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500"></div>
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-yellow-500"></div>
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500"></div>
           </div>
         </div>
         
-        <div className="h-32 overflow-y-auto custom-scrollbar log-container">
+        <div className="h-24 sm:h-32 overflow-y-auto custom-scrollbar log-container">
           {logs.length > 0 ? logs.map((log, index) => (
-            <div key={index} className="text-xs font-mono mb-1">
+            <div key={index} className="text-[10px] xs:text-xs font-mono mb-0.5 sm:mb-1 truncate">
               {log.includes('WARNING') ? (
                 <span className="text-yellow-400">{log}</span>
               ) : log.includes('ERROR') ? (
@@ -382,7 +382,7 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
               )}
             </div>
           )) : (
-            <div className="h-full flex items-center justify-center text-gray-500 text-sm">
+            <div className="h-full flex items-center justify-center text-gray-500 text-xs sm:text-sm">
               No system logs yet
             </div>
           )}

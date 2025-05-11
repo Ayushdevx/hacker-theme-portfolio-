@@ -648,12 +648,11 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
           />
 
           {/* Main content */}
-          <div className="relative z-10">
-            {/* Header with title and controls */}
-            <div className="flex flex-col sm:flex-row items-center justify-between mb-4 border-b border-green-500 border-opacity-30 pb-2">
-              <div className="flex items-center mb-2 sm:mb-0">
-                <FaLock className="mr-2 text-2xl" />
-                <h2 className={`text-xl font-mono ${isGlitching ? 'animate-pulse' : ''}`}>
+          <div className="relative z-10">            {/* Header with title and controls */}
+            <div className="flex flex-col xs:flex-row items-center justify-between mb-4 border-b border-green-500 border-opacity-30 pb-2">
+              <div className="flex items-center mb-2 xs:mb-0 w-full xs:w-auto justify-center xs:justify-start">
+                <FaLock className="mr-2 text-xl" />
+                <h2 className={`text-lg sm:text-xl font-mono ${isGlitching ? 'animate-pulse' : ''}`}>
                   {isGlitching ? 
                     <GlitchText text="Password Cracker" /> : 
                     "Password Cracker"}
@@ -662,175 +661,172 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
               <div className="flex space-x-2">
                 <button
                   onClick={() => toggleAnimationMode('matrix')}
-                  className={`px-2 py-1 rounded-md ${animationMode === 'matrix' ? 'bg-green-500 text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
+                  className={`p-1.5 rounded-md ${animationMode === 'matrix' ? 'bg-green-500 text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
                   aria-label="Toggle Matrix Effect"
                 >
-                  <SiMatrix className="text-lg" />
+                  <SiMatrix className="text-base" />
                 </button>
                 <button
                   onClick={toggleGlobe}
-                  className={`px-2 py-1 rounded-md ${showGlobe ? 'bg-green-500 text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
+                  className={`p-1.5 rounded-md ${showGlobe ? 'bg-green-500 text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
                   aria-label="Toggle Globe View"
                 >
-                  <FaGlobe className="text-lg" />
+                  <FaGlobe className="text-base" />
                 </button>
                 <button
                   onClick={() => setSoundEnabled(!soundEnabled)}
-                  className={`px-2 py-1 rounded-md ${soundEnabled ? 'bg-green-500 text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
+                  className={`p-1.5 rounded-md ${soundEnabled ? 'bg-green-500 text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
                   aria-label={soundEnabled ? "Disable Sound" : "Enable Sound"}
                 >
-                  {soundEnabled ? <FaWifi className="text-lg" /> : <FaWifi className="text-lg opacity-50" />}
+                  {soundEnabled ? <FaWifi className="text-base" /> : <FaWifi className="text-base opacity-50" />}
                 </button>
               </div>
-            </div>
-
-            {/* Tab navigation */}
-            <div className="flex mb-4 border-b border-green-500 border-opacity-20">
+            </div>{/* Tab navigation */}
+            <div className="flex flex-wrap mb-4 border-b border-green-500 border-opacity-20">
               <button 
                 onClick={() => setActiveTab('crack')}
-                className={`py-2 px-4 font-mono text-sm md:text-base flex items-center ${activeTab === 'crack' ? 'border-b-2 border-green-500 text-green-400' : 'text-green-600 hover:text-green-400'}`}
+                className={`py-2 px-3 font-mono text-xs sm:text-sm flex items-center ${activeTab === 'crack' ? 'border-b-2 border-green-500 text-green-400' : 'text-green-600 hover:text-green-400'}`}
                 aria-label="Password Cracker Tab"
               >
-                <FaKey className="inline mr-2" /> Password Cracker
+                <FaKey className="inline mr-1" /> Crack
               </button>
               <button 
                 onClick={() => setActiveTab('analyze')}
-                className={`py-2 px-4 font-mono text-sm md:text-base flex items-center ${activeTab === 'analyze' ? 'border-b-2 border-green-500 text-green-400' : 'text-green-600 hover:text-green-400'}`}
+                className={`py-2 px-3 font-mono text-xs sm:text-sm flex items-center ${activeTab === 'analyze' ? 'border-b-2 border-green-500 text-green-400' : 'text-green-600 hover:text-green-400'}`}
                 aria-label="Password Analyzer Tab"
               >
-                <FaCalculator className="inline mr-2" /> Analyze
+                <FaCalculator className="inline mr-1" /> Analyze
               </button>
               <button 
                 onClick={() => setActiveTab('history')}
-                className={`py-2 px-4 font-mono text-sm md:text-base flex items-center ${activeTab === 'history' ? 'border-b-2 border-green-500 text-green-400' : 'text-green-600 hover:text-green-400'}`}
+                className={`py-2 px-3 font-mono text-xs sm:text-sm flex items-center ${activeTab === 'history' ? 'border-b-2 border-green-500 text-green-400' : 'text-green-600 hover:text-green-400'}`}
                 aria-label="History Tab"
               >
-                <FaFileAlt className="inline mr-2" /> History
+                <FaFileAlt className="inline mr-1" /> History
               </button>
-            </div>
-
-            {/* Crack tab content */}
+            </div>            {/* Crack tab content */}
             {activeTab === 'crack' && (
               <div className="fade-in">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   {/* Configuration panel */}
                   <div className="bg-gray-800 bg-opacity-70 p-3 rounded-lg">
                     <h3 className="font-mono text-sm mb-3 border-b border-green-500 border-opacity-20 pb-1">Target Selection</h3>
                     
-                    <div className="mb-4">
-                      <label className="block text-xs mb-1 text-green-400">Password/Hash</label>
-                      <div className="flex">
-                        <input
-                          type="text"
-                          value={target}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="mb-4 sm:mb-0">
+                        <label className="block text-xs mb-1 text-green-400">Password/Hash</label>
+                        <div className="flex">
+                          <input
+                            type="text"
+                            value={target}
+                            onChange={(e) => {
+                              setTarget(e.target.value);
+                              playSound('typing');
+                            }}
+                            placeholder="Enter password or hash"
+                            className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded-l border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
+                          />
+                          <button
+                            onClick={() => {
+                              const randomPassword = commonPasswords[Math.floor(Math.random() * commonPasswords.length)].value;
+                              setTarget(randomPassword);
+                              addLog(`Selected random common password: ${randomPassword}`);
+                              playSound('click');
+                            }}
+                            className="bg-gray-700 text-green-400 px-2 py-1 rounded-r border border-green-500 border-opacity-30 border-l-0 hover:bg-gray-600"
+                            aria-label="Use random password"
+                          >
+                            <FaRandom />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-4 sm:mb-0">
+                        <label className="block text-xs mb-1 text-green-400">Attack Method</label>
+                        <select
+                          value={method}
                           onChange={(e) => {
-                            setTarget(e.target.value);
-                            playSound('typing');
-                          }}
-                          placeholder="Enter password or hash"
-                          className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded-l border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
-                        />
-                        <button
-                          onClick={() => {
-                            const randomPassword = commonPasswords[Math.floor(Math.random() * commonPasswords.length)].value;
-                            setTarget(randomPassword);
-                            addLog(`Selected random common password: ${randomPassword}`);
+                            setMethod(e.target.value);
+                            addLog(`Changed attack method to ${e.target.value}`);
                             playSound('click');
                           }}
-                          className="bg-gray-700 text-green-400 px-2 py-1 rounded-r border border-green-500 border-opacity-30 border-l-0 hover:bg-gray-600"
-                          aria-label="Use random password"
+                          className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
                         >
-                          <FaRandom />
+                          {methods.map(m => (
+                            <option key={m.id} value={m.id}>{m.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      <div className="mb-4 sm:mb-0">
+                        <label className="block text-xs mb-1 text-green-400">Hash Type</label>
+                        <select
+                          value={hashType}
+                          onChange={(e) => {
+                            setHashType(e.target.value);
+                            addLog(`Changed hash type to ${e.target.value}`);
+                            playSound('click');
+                          }}
+                          className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
+                        >
+                          {hashTypes.map(h => (
+                            <option key={h.id} value={h.id}>{h.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      <div className="flex justify-center items-center">
+                        <button
+                          onClick={() => {
+                            if (cracking) {
+                              setCracking(false);
+                              addLog("Password cracking stopped");
+                              playSound('error');
+                            } else {
+                              if (!target) {
+                                addLog("ERROR: No password or hash specified");
+                                playSound('error');
+                                return;
+                              }
+                              
+                              setCracking(true);
+                              setPasswordFound(null);
+                              setProgress(0);
+                              setAttempts([]);
+                              
+                              // Generate breach data
+                              const breachData = generateBreachData();
+                              setBreachLocations(breachData);
+                              
+                              addLog(`Starting password cracking with ${method} method...`);
+                              playSound('click');
+                              
+                              // Start cracking simulation
+                              simulateCracking();
+                            }
+                          }}
+                          className={`${
+                            cracking 
+                              ? 'bg-red-600 hover:bg-red-700 text-white' 
+                              : 'bg-green-600 hover:bg-green-700 text-white'
+                          } py-2 px-6 rounded-md font-mono flex items-center justify-center transition-all duration-300 w-full sm:w-auto`}
+                          aria-label={cracking ? "Stop cracking" : "Start cracking"}
+                        >
+                          {cracking ? (
+                            <>
+                              <FaUnlock className="mr-2 animate-pulse" /> STOP
+                            </>
+                          ) : (
+                            <>
+                              <FaLock className="mr-2" /> CRACK
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>
-                    
-                    <div className="mb-4">
-                      <label className="block text-xs mb-1 text-green-400">Attack Method</label>
-                      <select
-                        value={method}
-                        onChange={(e) => {
-                          setMethod(e.target.value);
-                          addLog(`Changed attack method to ${e.target.value}`);
-                          playSound('click');
-                        }}
-                        className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
-                      >
-                        {methods.map(m => (
-                          <option key={m.id} value={m.id}>{m.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    
-                    <div className="mb-4">
-                      <label className="block text-xs mb-1 text-green-400">Hash Type</label>
-                      <select
-                        value={hashType}
-                        onChange={(e) => {
-                          setHashType(e.target.value);
-                          addLog(`Changed hash type to ${e.target.value}`);
-                          playSound('click');
-                        }}
-                        className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
-                      >
-                        {hashTypes.map(h => (
-                          <option key={h.id} value={h.id}>{h.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    
-                    <div className="flex mt-4 justify-center">
-                      <button
-                        onClick={() => {
-                          if (cracking) {
-                            setCracking(false);
-                            addLog("Password cracking stopped");
-                            playSound('error');
-                          } else {
-                            if (!target) {
-                              addLog("ERROR: No password or hash specified");
-                              playSound('error');
-                              return;
-                            }
-                            
-                            setCracking(true);
-                            setPasswordFound(null);
-                            setProgress(0);
-                            setAttempts([]);
-                            
-                            // Generate breach data
-                            const breachData = generateBreachData();
-                            setBreachLocations(breachData);
-                            
-                            addLog(`Starting password cracking with ${method} method...`);
-                            playSound('click');
-                            
-                            // Start cracking simulation
-                            simulateCracking();
-                          }
-                        }}
-                        className={`${
-                          cracking 
-                            ? 'bg-red-600 hover:bg-red-700 text-white' 
-                            : 'bg-green-600 hover:bg-green-700 text-white'
-                        } py-2 px-6 rounded-md font-mono flex items-center justify-center transition-all duration-300`}
-                        aria-label={cracking ? "Stop cracking" : "Start cracking"}
-                      >
-                        {cracking ? (
-                          <>
-                            <FaUnlock className="mr-2 animate-pulse" /> STOP
-                          </>
-                        ) : (
-                          <>
-                            <FaLock className="mr-2" /> CRACK
-                          </>
-                        )}
-                      </button>
-                    </div>
                   </div>
-                  
-                  {/* Visualization panel */}
-                  <div className="bg-gray-800 bg-opacity-70 p-3 rounded-lg md:col-span-2">
+                    {/* Visualization panel */}
+                  <div className="bg-gray-800 bg-opacity-70 p-3 rounded-lg">
                     <h3 className="font-mono text-sm mb-3 border-b border-green-500 border-opacity-20 pb-1">Cracking Progress</h3>
                     
                     {/* Password Found Alert */}
@@ -842,17 +838,17 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                         </div>
                         <div className="font-mono text-xl flex items-center justify-center">
                           <FaKey className="mr-2 text-green-400" />
-                          <span className="text-green-300">{passwordFound}</span>
+                          <span className="text-green-300 break-all">{passwordFound}</span>
                         </div>
                       </div>
                     )}
                     
                     {/* Progress Bar */}
                     <div className="mb-4">
-                      <div className="flex justify-between text-xs mb-1">
+                      <div className="flex flex-col xs:flex-row xs:justify-between text-xs mb-1">
                         <span>Progress: {progress}%</span>
                         {cracking && (
-                          <span className="text-green-300 animate-pulse">
+                          <span className="text-green-300 animate-pulse mt-1 xs:mt-0">
                             <TypewriterEffect 
                               text={`Trying ${method === 'dictionary' ? 'dictionary words' : method === 'rainbow' ? 'hash lookups' : 'combinations'}...`} 
                               speed={100} 
@@ -872,7 +868,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                     {/* Globe visualization */}
                     {showGlobe && isClient && (
                       <div className="mb-4">
-                        <div className="border border-green-500 border-opacity-30 bg-black bg-opacity-50 rounded-md overflow-hidden" style={{ height: '300px' }}>
+                        <div className="border border-green-500 border-opacity-30 bg-black bg-opacity-50 rounded-md overflow-hidden" style={{ height: '200px', maxHeight: '30vh' }}>
                           <Suspense fallback={<div className="w-full h-full flex items-center justify-center"><SiMatrix className="text-green-500 animate-pulse text-3xl" /></div>}>
                             <Globe3D breachLocations={breachLocations} />
                           </Suspense>
@@ -882,36 +878,38 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                     
                     {/* Attempt Log */}
                     <div className="max-h-40 overflow-y-auto bg-gray-900 rounded p-2 border border-green-500 border-opacity-20 text-xs font-mono">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="text-green-400 border-b border-green-900">
-                            <th className="text-left py-1">Time</th>
-                            <th className="text-left py-1">Method</th>
-                            <th className="text-left py-1">Attempt</th>
-                            <th className="text-left py-1">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {attempts.map((attempt, index) => (
-                            <tr 
-                              key={index}
-                              className={`
-                                border-b border-green-900 border-opacity-50 last:border-0
-                                ${attempt.status === 'success' ? 'text-green-300' : attempt.status === 'failed' ? 'text-red-400' : 'text-yellow-300'}
-                              `}
-                            >
-                              <td className="py-1">{attempt.time}</td>
-                              <td className="py-1">{attempt.method}</td>
-                              <td className="py-1 truncate max-w-[10ch]">{attempt.password}</td>
-                              <td className="py-1">
-                                {attempt.status === 'trying' && <span className="animate-pulse">Trying...</span>}
-                                {attempt.status === 'success' && <span className="flex items-center"><FaCheckCircle className="mr-1" /> Match</span>}
-                                {attempt.status === 'failed' && <span>Failed</span>}
-                              </td>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="text-green-400 border-b border-green-900">
+                              <th className="text-left py-1 whitespace-nowrap px-1">Time</th>
+                              <th className="text-left py-1 whitespace-nowrap px-1">Method</th>
+                              <th className="text-left py-1 whitespace-nowrap px-1">Attempt</th>
+                              <th className="text-left py-1 whitespace-nowrap px-1">Status</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {attempts.map((attempt, index) => (
+                              <tr 
+                                key={index}
+                                className={`
+                                  border-b border-green-900 border-opacity-50 last:border-0
+                                  ${attempt.status === 'success' ? 'text-green-300' : attempt.status === 'failed' ? 'text-red-400' : 'text-yellow-300'}
+                                `}
+                              >
+                                <td className="py-1 px-1">{attempt.time}</td>
+                                <td className="py-1 px-1 whitespace-nowrap">{attempt.method}</td>
+                                <td className="py-1 px-1 truncate max-w-[10ch]">{attempt.password}</td>
+                                <td className="py-1 px-1 whitespace-nowrap">
+                                  {attempt.status === 'trying' && <span className="animate-pulse">Trying...</span>}
+                                  {attempt.status === 'success' && <span className="flex items-center"><FaCheckCircle className="mr-1" /> Match</span>}
+                                  {attempt.status === 'failed' && <span>Failed</span>}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -936,12 +934,11 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                   </div>
                 </div>
               </div>
-            )}
-              {/* Analyze tab content */}
+            )}              {/* Analyze tab content */}
             {activeTab === 'analyze' && (
               <div className="fade-in">
-                <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg">
-                  <h3 className="font-mono text-lg mb-3 border-b border-green-500 border-opacity-20 pb-1">Password Analyzer</h3>
+                <div className="bg-gray-800 bg-opacity-70 p-3 sm:p-4 rounded-lg">
+                  <h3 className="font-mono text-base sm:text-lg mb-3 border-b border-green-500 border-opacity-20 pb-1">Password Analyzer</h3>
                   
                   <div className="mb-4">
                     <label className="block text-sm mb-1 text-green-400">Enter Password to Analyze</label>
@@ -965,7 +962,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                   </div>
                   
                   {complexity && (
-                    <div className="bg-gray-900 p-4 rounded-lg border border-green-500 border-opacity-20">
+                    <div className="bg-gray-900 p-3 sm:p-4 rounded-lg border border-green-500 border-opacity-20">
                       <h4 className="font-mono text-green-400 mb-3">Password Strength: {complexity.score.toFixed(0)}%</h4>
                       
                       <div className="w-full bg-gray-700 rounded-full h-2 mb-4 overflow-hidden">
@@ -979,7 +976,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                         />
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-2 text-xs sm:text-sm">
                         <div className="flex items-center">
                           {isClient && (
                             <span className={`mr-2 ${complexity.length >= 8 ? 'text-green-400' : 'text-red-400'}`}>
@@ -1026,61 +1023,62 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                         </div>
                       </div>
                       
-                      <div className="mt-4 p-3 bg-black bg-opacity-50 rounded border border-green-500 border-opacity-20">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-green-400">Estimated time to crack:</span>
-                          <span className={`font-mono ${
+                      <div className="mt-4 p-2 sm:p-3 bg-black bg-opacity-50 rounded border border-green-500 border-opacity-20">
+                        <div className="flex flex-col sm:flex-row sm:justify-between mb-2 gap-1">
+                          <span className="text-green-400 text-xs sm:text-sm">Estimated time to crack:</span>
+                          <span className={`font-mono text-xs sm:text-sm ${
                             complexity.entropy < 40 ? 'text-red-400' : 
                             complexity.entropy < 60 ? 'text-yellow-400' : 
                             complexity.entropy < 80 ? 'text-blue-400' : 'text-green-400'
                           }`}>{complexity.timeToCrack}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-green-400">Entropy:</span>
-                          <span className="font-mono">{complexity.entropy.toFixed(2)} bits</span>
+                        <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                          <span className="text-green-400 text-xs sm:text-sm">Entropy:</span>
+                          <span className="font-mono text-xs sm:text-sm">{complexity.entropy.toFixed(2)} bits</span>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
-            )}
-              {/* History tab content */}
+            )}              {/* History tab content */}
             {activeTab === 'history' && (
               <div className="fade-in">
-                <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg">
-                  <h3 className="font-mono text-lg mb-3 border-b border-green-500 border-opacity-20 pb-1">Password Breach History</h3>
+                <div className="bg-gray-800 bg-opacity-70 p-3 sm:p-4 rounded-lg">
+                  <h3 className="font-mono text-base sm:text-lg mb-3 border-b border-green-500 border-opacity-20 pb-1">Password Breach History</h3>
                   
                   {isClient ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                       <div className="bg-gray-900 rounded-lg p-3 border border-green-500 border-opacity-20">
-                        <h4 className="font-mono text-sm text-green-400 mb-2">Recent Breaches</h4>
-                        <div className="max-h-60 overflow-y-auto">
-                          <table className="w-full text-xs">
-                            <thead>
-                              <tr className="text-green-400 border-b border-green-900">
-                                <th className="text-left py-1">Location</th>
-                                <th className="text-right py-1">Records</th>
-                                <th className="text-right py-1">Time</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {breachLocations.map((breach, index) => (
-                                <tr key={index} className="border-b border-green-900 border-opacity-30 last:border-0">
-                                  <td className="py-1">{breach.location}</td>
-                                  <td className="py-1 text-right">{breach.count.toLocaleString()}</td>
-                                  <td className="py-1 text-right text-xs opacity-70">
-                                    {new Date(breach.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                  </td>
+                        <h4 className="font-mono text-xs sm:text-sm text-green-400 mb-2">Recent Breaches</h4>
+                        <div className="max-h-40 sm:max-h-60 overflow-y-auto">
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-xs">
+                              <thead>
+                                <tr className="text-green-400 border-b border-green-900">
+                                  <th className="text-left py-1 px-1 whitespace-nowrap">Location</th>
+                                  <th className="text-right py-1 px-1 whitespace-nowrap">Records</th>
+                                  <th className="text-right py-1 px-1 whitespace-nowrap">Time</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody>
+                                {breachLocations.map((breach, index) => (
+                                  <tr key={index} className="border-b border-green-900 border-opacity-30 last:border-0">
+                                    <td className="py-1 px-1">{breach.location}</td>
+                                    <td className="py-1 px-1 text-right whitespace-nowrap">{breach.count.toLocaleString()}</td>
+                                    <td className="py-1 px-1 text-right whitespace-nowrap text-xs opacity-70">
+                                      {new Date(breach.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
                       
                       <div className="bg-gray-900 rounded-lg p-3 border border-green-500 border-opacity-20">
-                        <h4 className="font-mono text-sm text-green-400 mb-2">Breach Statistics</h4>
+                        <h4 className="font-mono text-xs sm:text-sm text-green-400 mb-2">Breach Statistics</h4>
                         <div className="space-y-3">
                           <div>
                             <div className="flex justify-between text-xs mb-1">

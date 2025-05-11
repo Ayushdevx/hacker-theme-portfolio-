@@ -201,23 +201,23 @@ const HackerProfile = () => {
   };
 
   return (
-    <div className={`neo-panel bg-black bg-opacity-90 text-green-500 p-6 rounded-lg max-w-4xl mx-auto my-8 ${isGlitching ? 'glitch' : ''}`}>
+    <div className={`neo-panel bg-black bg-opacity-90 text-green-500 p-3 sm:p-6 rounded-lg max-w-4xl mx-auto my-4 sm:my-8 ${isGlitching ? 'glitch' : ''}`}>
       {/* Authentication Status Display */}
       {authStatus === 'authenticating' && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
-          <div className="neo-panel bg-black p-6 rounded-lg max-w-md w-full border border-green-500">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-green-400 text-xl font-mono flex items-center">
-                <FaFingerprint className="mr-2" /> Biometric Verification
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+          <div className="neo-panel bg-black p-3 sm:p-6 rounded-lg max-w-md w-full border border-green-500">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h3 className="text-green-400 text-base sm:text-xl font-mono flex items-center">
+                <FaFingerprint className="mr-1 sm:mr-2" /> Biometric Verification
               </h3>
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <div className="flex space-x-1 sm:space-x-2">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
               </div>
             </div>
             
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <div className="relative pt-1">
                 <div className="flex items-center justify-between">
                   <div>
@@ -231,7 +231,7 @@ const HackerProfile = () => {
                     </span>
                   </div>
                 </div>
-                <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-900">
+                <div className="overflow-hidden h-1.5 sm:h-2 mb-2 sm:mb-4 text-xs flex rounded bg-green-900">
                   <div 
                     style={{ width: `${biometricProgress}%` }} 
                     className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
@@ -249,14 +249,14 @@ const HackerProfile = () => {
                     "Access granted."
                   ]}
                   speed={40}
-                  className="text-yellow-400 text-sm"
+                  className="text-yellow-400 text-xs sm:text-sm"
                   loop={false}
                 />
               </div>
             </div>
             
             <div className="flex justify-center">
-              <div className="relative w-24 h-24 rounded-full border-2 border-green-500 flex items-center justify-center overflow-hidden">
+              <div className="relative w-16 h-16 sm:w-24 sm:h-24 rounded-full border-2 border-green-500 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0">
                   <img
                     src="/profile-pic.jpg"
@@ -271,7 +271,7 @@ const HackerProfile = () => {
                 </div>
                 <div className="absolute inset-0 border-4 border-transparent rounded-full animate-spin-slow pointer-events-none"></div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 pointer-events-none z-10">
-                  <FaFingerprint className="text-green-500 text-3xl animate-pulse" />
+                  <FaFingerprint className="text-green-500 text-xl sm:text-3xl animate-pulse" />
                 </div>
               </div>
             </div>

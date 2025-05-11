@@ -589,14 +589,13 @@ d41d8cd98f00b204e9800998ecf8427e
     );
   };
   return (
-    <div className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} ${darkMode ? 'bg-black bg-opacity-90' : 'bg-gray-100'}`}>
-      <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+    <div className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} ${darkMode ? 'bg-black bg-opacity-90' : 'bg-gray-100'}`}>      <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
         <div>
-          <div className="flex items-center">
-            <FaTerminal className="text-green-500 mr-2" />
+          <div className="flex items-center justify-center w-full md:w-auto">
+            <FaTerminal className="text-green-500 mr-2 text-lg" />
             <GlitchText 
               text="FILE EXPLORER" 
-              className="text-xl font-mono text-green-500 font-bold"
+              className="text-lg sm:text-xl font-mono text-green-500 font-bold"
               intensity={3}
             />
             <div className="ml-2 text-xs text-gray-500 bg-black px-2 py-0.5 rounded">
@@ -606,51 +605,52 @@ d41d8cd98f00b204e9800998ecf8427e
           {renderBreadcrumbs()}
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-center md:justify-end">
           <div className="relative">
             <input
               type="text"
-              placeholder="Search files..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-black text-green-400 border border-green-500/30 rounded px-2 py-1 text-sm font-mono w-40 focus:border-green-500 focus:outline-none"
+              className="bg-black text-green-400 border border-green-500/30 rounded px-2 py-1 text-xs sm:text-sm font-mono w-32 sm:w-40 focus:border-green-500 focus:outline-none"
             />
-            <FaSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-500/50" />
+            <FaSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-500/50 text-xs" />
           </div>
           
-          <button
-            onClick={() => setShowHidden(!showHidden)}
-            className={`text-xs px-2 py-1 rounded border ${showHidden ? 'bg-green-500/20 border-green-500' : 'border-gray-700'}`}
-            title={showHidden ? "Hide hidden files" : "Show hidden files"}
-          >
-            {showHidden ? "Hide Hidden" : "Show Hidden"}
-          </button>
-          
-          <button
-            onClick={toggleView}
-            className="text-xs px-2 py-1 rounded border border-gray-700"
-            title={viewMode === 'list' ? "Switch to grid view" : "Switch to list view"}
-          >
-            {viewMode === 'list' ? "Grid" : "List"}
-          </button>
-          
-          <button
-            onClick={() => setCurrentPath('/home/hacker')}
-            className="text-xs px-2 py-1 rounded border border-gray-700"
-            title="Go to home directory"
-          >
-            Home
-          </button>
+          <div className="flex flex-wrap gap-1 sm:gap-2">
+            <button
+              onClick={() => setShowHidden(!showHidden)}
+              className={`text-xs px-1.5 sm:px-2 py-1 rounded border ${showHidden ? 'bg-green-500/20 border-green-500' : 'border-gray-700'}`}
+              title={showHidden ? "Hide hidden files" : "Show hidden files"}
+            >
+              {showHidden ? "Hidden" : "Show"}
+            </button>
+            
+            <button
+              onClick={toggleView}
+              className="text-xs px-1.5 sm:px-2 py-1 rounded border border-gray-700"
+              title={viewMode === 'list' ? "Switch to grid view" : "Switch to list view"}
+            >
+              {viewMode === 'list' ? "Grid" : "List"}
+            </button>
+            
+            <button
+              onClick={() => setCurrentPath('/home/hacker')}
+              className="text-xs px-1.5 sm:px-2 py-1 rounded border border-gray-700"
+              title="Go to home directory"
+            >
+              Home
+            </button>          </div>
         </div>
       </div>
       
       {/* File Navigation */}
-      <div className={`${darkMode ? 'bg-gray-900/50' : 'bg-white'} border ${darkMode ? 'border-green-500/30' : 'border-gray-300'} rounded p-2 mb-4`}>
+      <div className={`${darkMode ? 'bg-gray-900/50' : 'bg-white'} border ${darkMode ? 'border-green-500/30' : 'border-gray-300'} rounded p-2 mb-4 overflow-x-auto`}>
         {viewMode === 'list' ? (
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead>
               <tr className={`${darkMode ? 'border-green-500/30' : 'border-gray-300'} border-b text-xs`}>
-                <th className="text-left py-2 px-2 w-1/2">
+                <th className="text-left py-1 sm:py-2 px-1 sm:px-2 w-1/2">
                   <div className="flex items-center cursor-pointer" onClick={() => toggleSort('name')}>
                     <span>NAME</span>
                     {sortBy === 'name' && (
@@ -659,9 +659,9 @@ d41d8cd98f00b204e9800998ecf8427e
                   </div>
                 </th>
                 {showPermissions && (
-                  <th className="text-left py-2 px-2 hidden md:table-cell">PERMISSIONS</th>
+                  <th className="text-left py-1 sm:py-2 px-1 sm:px-2 hidden md:table-cell">PERMISSIONS</th>
                 )}
-                <th className="text-left py-2 px-2 hidden md:table-cell">
+                <th className="text-left py-1 sm:py-2 px-1 sm:px-2 hidden md:table-cell">
                   <div className="flex items-center cursor-pointer" onClick={() => toggleSort('size')}>
                     <span>SIZE</span>
                     {sortBy === 'size' && (
@@ -688,26 +688,25 @@ d41d8cd98f00b204e9800998ecf8427e
                     file.name === selectedFile ? 'bg-green-500/20' : ''
                   } ${file.locked ? 'text-red-400' : ''}`}
                   onClick={() => handleFileClick(file)}
-                >
-                  <td className="py-2 px-2">
+                >                  <td className="py-1 sm:py-2 px-1 sm:px-2">
                     <div className="flex items-center">
-                      <span className="mr-2">{getFileIcon(file)}</span>
-                      <span className={file.starred ? 'text-yellow-400' : file.executable ? 'text-green-500' : ''}>
+                      <span className="mr-1 sm:mr-2">{getFileIcon(file)}</span>
+                      <span className={`truncate max-w-[120px] sm:max-w-full ${file.starred ? 'text-yellow-400' : file.executable ? 'text-green-500' : ''}`}>
                         {file.name}
                       </span>
-                      {file.starred && <FaStar className="ml-2 text-yellow-400 text-xs" />}
-                      {file.executable && <span className="ml-2 text-green-500 text-xs">*</span>}
+                      {file.starred && <FaStar className="ml-1 sm:ml-2 text-yellow-400 text-xs" />}
+                      {file.executable && <span className="ml-1 sm:ml-2 text-green-500 text-xs">*</span>}
                     </div>
                   </td>
                   {showPermissions && (
-                    <td className="py-2 px-2 font-mono text-xs hidden md:table-cell">
+                    <td className="py-1 sm:py-2 px-1 sm:px-2 font-mono text-xs hidden md:table-cell">
                       {file.permissions || (file.type === 'directory' ? 'drwxr-xr-x' : '-rw-r--r--')}
                     </td>
                   )}
-                  <td className="py-2 px-2 text-xs hidden md:table-cell">{file.size || '-'}</td>
-                  <td className="py-2 px-2 text-xs hidden md:table-cell">{file.modified || '-'}</td>
-                  <td className="py-2 px-2 text-right">
-                    <div className="flex justify-end space-x-2">
+                  <td className="py-1 sm:py-2 px-1 sm:px-2 text-xs hidden md:table-cell">{file.size || '-'}</td>
+                  <td className="py-1 sm:py-2 px-1 sm:px-2 text-xs hidden md:table-cell">{file.modified || '-'}</td>
+                  <td className="py-1 sm:py-2 px-1 sm:px-2 text-right">
+                    <div className="flex justify-end space-x-1 sm:space-x-2">
                       <button 
                         onClick={(e) => handleCopyFile(file, e)}
                         className="text-green-500 hover:text-green-400"
@@ -727,18 +726,18 @@ d41d8cd98f00b204e9800998ecf8427e
             </tbody>
           </table>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4 p-1 sm:p-2">
             {filteredFiles().map((file, index) => (
               <div
                 key={index}
-                className={`p-2 rounded border border-gray-700/30 hover:border-green-500/50 cursor-pointer flex flex-col items-center justify-center ${
+                className={`p-1 sm:p-2 rounded border border-gray-700/30 hover:border-green-500/50 cursor-pointer flex flex-col items-center justify-center ${
                   file.name === selectedFile ? 'bg-green-500/20 border-green-500/50' : ''
                 } ${file.locked ? 'text-red-400' : ''}`}
                 onClick={() => handleFileClick(file)}
               >
-                <div className="text-2xl mb-2">{getFileIcon(file)}</div>
+                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{getFileIcon(file)}</div>
                 <div className="text-xs text-center truncate w-full">
-                  {file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name}
+                  {file.name.length > 12 ? file.name.substring(0, 10) + '...' : file.name}
                 </div>
                 {file.starred && <FaStar className="mt-1 text-yellow-400 text-xs" />}
               </div>
@@ -746,17 +745,16 @@ d41d8cd98f00b204e9800998ecf8427e
           </div>
         )}
       </div>
-      
-      {/* File Content Viewer */}
+        {/* File Content Viewer */}
       {showFileContent && (
-        <div className={`${darkMode ? 'bg-black' : 'bg-gray-100'} border ${darkMode ? 'border-green-500/30' : 'border-gray-300'} rounded p-2 mt-4`}>
-          <div className="flex justify-between items-center mb-2 border-b border-gray-700 pb-2">
+        <div className={`${darkMode ? 'bg-black' : 'bg-gray-100'} border ${darkMode ? 'border-green-500/30' : 'border-gray-300'} rounded p-1 sm:p-2 mt-4`}>
+          <div className="flex justify-between items-center mb-2 border-b border-gray-700 pb-1 sm:pb-2">
             <div className="flex items-center">
-              <FaFileCode className="text-green-500 mr-2" />
-              <div className="text-green-500 font-mono">{selectedFile}</div>
+              <FaFileCode className="text-green-500 mr-1 sm:mr-2 text-sm sm:text-base" />
+              <div className="text-green-500 font-mono text-xs sm:text-sm truncate max-w-[150px] sm:max-w-full">{selectedFile}</div>
             </div>
             <button 
-              className="text-gray-500 hover:text-green-500"
+              className="text-gray-500 hover:text-green-500 text-xs sm:text-sm"
               onClick={() => {
                 setShowFileContent(null);
                 setSelectedFile(null);
@@ -765,18 +763,17 @@ d41d8cd98f00b204e9800998ecf8427e
               CLOSE
             </button>
           </div>
-          <pre className="font-mono text-xs overflow-x-auto p-2 max-h-64 custom-scrollbar">
+          <pre className="font-mono text-xs overflow-x-auto p-1 sm:p-2 max-h-48 sm:max-h-64 custom-scrollbar text-wrap break-all sm:break-normal">
             {showFileContent}
           </pre>
         </div>
       )}
-      
-      {/* Status Bar */}
-      <div className="flex justify-between items-center mt-4 text-xs text-gray-500 font-mono">
+        {/* Status Bar */}
+      <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center mt-4 text-[10px] xs:text-xs text-gray-500 font-mono gap-2 xs:gap-0">
         <div>
           {clipboard && (
             <div className="flex items-center">
-              <span>Clipboard: {clipboard.name}</span>
+              <span className="truncate max-w-[120px] sm:max-w-full">Clipboard: {clipboard.name}</span>
               <button
                 onClick={handlePaste}
                 className="ml-2 text-green-500 hover:text-green-400"
@@ -787,8 +784,8 @@ d41d8cd98f00b204e9800998ecf8427e
             </div>
           )}
         </div>
-        <div className="flex items-center">
-          <FaCog className="text-green-500 mr-1 animate-spin-slow" />
+        <div className="flex items-center w-full xs:w-auto">
+          <FaCog className="text-green-500 mr-1 animate-spin-slow text-xs" />
           <TypewriterEffect 
             text={[
               "System secure", 

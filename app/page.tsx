@@ -95,14 +95,14 @@ export default function Home() {
   }, []);
   
   return (
-    <main className="min-h-screen bg-black text-green-500 p-8 relative">
+    <main className="min-h-screen bg-black text-green-500 p-2 xs:p-4 sm:p-8 relative">
       <MatrixRain />
       <ThemeSwitcher />
       
       <div className="relative z-10 max-w-7xl mx-auto">
         <HackerProfile />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
           <div id="terminal-section" className="relative no-scroll-capture"
             style={{ 
               touchAction: 'none', 
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-6 md:mb-8">
           <div id="network-scanner-section" className="relative no-scroll-capture"
             style={{ 
               touchAction: 'none', 
@@ -142,7 +142,9 @@ export default function Home() {
               <NetworkScanner />
             </SafeScrollAnchor>
           </div>
-          <FileExplorer />
+          <div className="w-full h-full">
+            <FileExplorer />
+          </div>
           <div 
             className="relative no-scroll-capture"
             style={{ 
