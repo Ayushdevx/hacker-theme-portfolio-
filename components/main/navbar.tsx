@@ -7,30 +7,50 @@ import { NAV_LINKS, SOCIALS } from "@/constants";
 
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault(); // Prevent default anchor behavior
+    
+    // Get the element to scroll to
+    const element = document.getElementById(sectionId);
+    
+    // If element exists, scroll smoothly to it
+    if (element) {
+      // Optional: close mobile menu if open
+      if (isMobileMenuOpen) setIsMobileMenuOpen(false);
+      
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   return (
     <div className="w-full h-[65px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#03001427] backdrop-blur-md z-50 px-10">
       {/* Navbar Container */}
       <div className="w-full h-full flex items-center justify-between m-auto px-[10px]">
         {/* Logo + Name */}
-        <Link
-          href="#about-me"
+        <a
+          href="#"
+          onClick={(e) => handleNavClick(e, 'about-me')}
           className="flex items-center"
         >
           <div className="hidden md:flex font-bold ml-[10px] text-gray-300">Yashika Kainth</div>
-        </Link>
+        </a>
 
         {/* Web Navbar */}
         <div className="hidden md:flex h-full flex-row items-center justify-center">
           <div className="flex items-center justify-center w-auto h-auto border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] mr-[15px] px-[28px] py-[10px] rounded-full text-gray-200">
             {NAV_LINKS.map((link) => (
-              <Link
+              <a
                 key={link.title}
                 href={link.link}
+                onClick={(e) => handleNavClick(e, link.link.replace('#', ''))}
                 className="cursor-pointer hover:text-[rgb(112,66,248)] transition px-4 whitespace-nowrap"
               >
                 {link.title}
-              </Link>
+              </a>
             ))}
           </div>
         </div>

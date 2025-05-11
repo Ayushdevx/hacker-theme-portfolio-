@@ -35,12 +35,74 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
     setLogs(prev => [...prev.slice(-20), `[${timestamp}] ${message}`]);
   };
 
-  // Scroll logs to bottom when new logs are added
+  // Scroll logs to bottom when new logs are added - fixed to prevent page auto-scrolling
   useEffect(() => {
     if (logEndRef.current) {
-      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      // Only scroll the log container, not the entire page
+      const logContainer = logEndRef.current.closest('.log-container');
+      if (logContainer) {
+        logContainer.scrollTop = logContainer.scrollHeight;
+      } else {
+        // Fallback with smooth scrolling that won't affect page position
+        const currentPageScroll = window.scrollY;
+        logEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Restore page scroll position
+        window.scrollTo(0, currentPageScroll);
+      }
     }
   }, [logs]);
+
+  // Prevent component from auto-scrolling into view
+  useEffect(() => {
+    // Create a unique ID for this component if not already exists
+    const componentId = 'system-info-component';
+    const componentEl = document.getElementById(componentId) || document.querySelector('.system-info-component');
+    if (!componentEl) return;
+    
+    // Override any attempts to scroll this into view
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    
+    // Create a no-op function for this element
+    componentEl.scrollIntoView = function(options) {
+      // Do nothing - prevents scrolling
+      return;
+    };
+    
+    // Create a more aggressive scroll prevention
+    const preventScroll = () => {
+      // Check if we're near the component
+      const rect = componentEl.getBoundingClientRect();
+      if (Math.abs(rect.top) < window.innerHeight) {
+        // We're near the component, maintain current scroll
+        window.scrollTo(0, window.scrollY);
+      }
+    };
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', preventScroll, { passive: true });
+    
+    // Set up a MutationObserver to watch for DOM changes that might trigger scrolling
+    const observer = new MutationObserver(() => {
+      preventScroll();
+    });
+    
+    // Start observing the document
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true,
+      attributes: true,
+      characterData: true
+    });
+    
+    return () => {
+      // Restore original behavior on cleanup
+      if (componentEl) {
+        componentEl.scrollIntoView = originalScrollIntoView;
+      }
+      window.removeEventListener('scroll', preventScroll);
+      observer.disconnect();
+    };
+  }, []);
 
   // Update system stats
   useEffect(() => {
@@ -111,7 +173,16 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
   }, []);
 
   return (
-    <div className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className}`}>
+    <div 
+      id="system-info-component"
+      className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} system-info-component no-auto-scroll`}
+      style={{
+        scrollMarginTop: '100vh',
+        scrollSnapAlign: 'none',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+      }}
+    >
       <div className="mb-4 flex items-center">
         <FaServer className="text-green-500 mr-2" />
         <GlitchText
@@ -260,8 +331,8 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
               </div>
               <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-blue-500 transition-all duration-300" 
-                  style={{ width: `${Math.min((networkTraffic / 200) * 100, 100)}%` }}
+                  className="h-full bg-blue-500"
+                  style={{ width: `${Math.min(Math.max(networkTraffic / 2, 10), 100)}%` }}
                 ></div>
               </div>
             </div>
@@ -272,17 +343,17 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
                 <span className="text-green-400">{uptime}</span>
               </div>
             </div>
-          </div>
-          
-          <div className="mt-4">
-            <div className="text-gray-400 text-xs mb-1">Running Services</div>
-            <div className="text-green-400 text-xs grid grid-cols-2 gap-1">
-              {runningProcesses.map((process, index) => (
-                <div key={index} className="flex items-center">
-                  <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1"></span>
-                  {process}
-                </div>
-              ))}
+            
+            <div>
+              <div className="text-xs mb-1 text-gray-400">Running Services</div>
+              <div className="flex flex-wrap text-xs gap-1">
+                {runningProcesses.map((process, idx) => (
+                  <div key={idx} className="bg-black/30 border border-green-500/30 rounded px-1 py-0.5 flex items-center">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 mr-1"></span>
+                    <span className="text-green-400">{process}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -290,60 +361,36 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
       
       {/* System logs */}
       <div className="border border-green-500/30 bg-black/50 rounded p-2">
-        <div className="text-green-400 font-mono text-xs mb-1 flex items-center">
-          <span>SYSTEM LOGS</span>
-          <div className="ml-auto flex space-x-1">
+        <div className="flex justify-between items-center mb-2">
+          <div className="text-green-400 font-mono text-sm">SYSTEM LOGS</div>
+          <div className="flex space-x-1">
             <div className="w-2 h-2 rounded-full bg-red-500"></div>
             <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
             <div className="w-2 h-2 rounded-full bg-green-500"></div>
           </div>
         </div>
         
-        <div className="bg-black border border-green-500/20 h-28 overflow-y-auto p-2 font-mono text-xs custom-scrollbar">
-          {logs.length > 0 ? (
-            logs.map((log, idx) => (
-              <div key={idx} className="mb-1">
-                {log.includes('WARNING') ? (
-                  <span className="text-yellow-400">{log}</span>
-                ) : log.includes('ERROR') ? (
-                  <span className="text-red-400">{log}</span>
-                ) : (
-                  <span className="text-green-400">{log}</span>
-                )}
-              </div>
-            ))
-          ) : (
-            <TypewriterEffect 
-              text="System log monitoring initialized. Waiting for events..."
-              speed={30}
-              className="text-green-400"
-            />
+        <div className="h-32 overflow-y-auto custom-scrollbar log-container">
+          {logs.length > 0 ? logs.map((log, index) => (
+            <div key={index} className="text-xs font-mono mb-1">
+              {log.includes('WARNING') ? (
+                <span className="text-yellow-400">{log}</span>
+              ) : log.includes('ERROR') ? (
+                <span className="text-red-400">{log}</span>
+              ) : (
+                <span className="text-green-400">{log}</span>
+              )}
+            </div>
+          )) : (
+            <div className="h-full flex items-center justify-center text-gray-500 text-sm">
+              No system logs yet
+            </div>
           )}
-          <div ref={logEndRef} />
-        </div>
-      </div>
-      
-      {/* Status Bar */}
-      <div className="flex justify-between items-center mt-4 text-xs text-gray-500 font-mono">
-        <div className="flex items-center">
-          <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1"></span>
-          <TypewriterEffect 
-            text={[
-              "System monitoring active", 
-              "Security protocols engaged", 
-              "Scanning for intrusions"
-            ]}
-            speed={30}
-            loop={true}
-            deleteSpeed={10}
-          />
-        </div>
-        <div>
-          <span>Host: hacker-portfolio</span>
+          <div ref={logEndRef}></div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default SystemInfo;

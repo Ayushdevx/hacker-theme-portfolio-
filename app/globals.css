@@ -789,6 +789,10 @@ html {
   animation-delay: 1s;
 }
 
+.delayed-animation {
+  animation-delay: 1.5s;
+}
+
 /* Staggered animation effect for lists */
 .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
 .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
@@ -1158,436 +1162,108 @@ html {
   transform: translateY(0);
 }
 
-:root {
-  --hacker-green: #39ff14;
-  --hacker-blue: #00ffff;
-  --hacker-red: #ff3131;
-  --terminal-bg: #0a0a0a;
-  --terminal-text: #39ff14;
+/* Additional scroll prevention for PasswordCracker */
+.prevent-scroll-jump {
+  contain: layout style paint;
+  content-visibility: auto;
+  scroll-margin-top: 100vh; /* Prevent auto-scrolling */
 }
 
-body {
-  background-color: var(--terminal-bg);
-  color: var(--terminal-text);
-  font-family: 'Fira Code', monospace;
+/* Modify the fade-in animation to have a longer delay */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease 1.5s forwards; /* 1.5s delay for safety */
 }
 
-/* Terminal Window Styles */
-.terminal-window {
-  background: var(--terminal-bg);
-  border: 1px solid var(--hacker-green);
-  border-radius: 6px;
-  box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
-  position: relative;
-  overflow: hidden;
+/* Anti-scroll-hijacking utility classes */
+.prevent-scroll-jump {
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+  /* Block scroll anchors */
+  scroll-margin-top: 100vh;
+  scroll-margin-bottom: 100vh;
 }
 
-.terminal-header {
-  background: #1a1a1a;
-  padding: 8px;
-  border-bottom: 1px solid var(--hacker-green);
+.no-scroll-capture {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  touch-action: none;
+  -ms-scroll-chaining: none;
+  isolation: isolate;
+  z-index: 1;
 }
 
-.terminal-title {
-  color: var(--hacker-green);
-  font-family: 'VT323', monospace;
-  font-size: 1.2rem;
+html, body {
+  overscroll-behavior: auto;
+  scroll-behavior: smooth;
 }
 
-/* Matrix Rain Effect */
-.matrix-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Glitch Effects */
-.glitch-text {
-  position: relative;
-  animation: glitch 1s infinite;
-}
-
-@keyframes glitch {
-  0% {
-    text-shadow: 2px 0 var(--hacker-red), -2px 0 var(--hacker-blue);
-  }
-  25% {
-    text-shadow: -2px 0 var(--hacker-red), 2px 0 var(--hacker-blue);
-  }
-  50% {
-    text-shadow: 2px 2px var(--hacker-red), -2px -2px var(--hacker-blue);
-  }
-  75% {
-    text-shadow: -2px 2px var(--hacker-red), 2px -2px var(--hacker-blue);
-  }
-  100% {
-    text-shadow: 2px 0 var(--hacker-red), -2px 0 var(--hacker-blue);
-  }
-}
-
-/* Terminal Typing Animation */
-.typing {
-  border-right: 2px solid var(--hacker-green);
-  animation: blink 0.7s infinite;
-}
-
-@keyframes blink {
-  50% { border-color: transparent; }
-}
-
-/* Scanlines Effect */
-.scanlines {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(0, 0, 0, 0.1) 50%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-/* Hacker Button Styles */
-.hacker-button {
-  background: transparent;
-  border: 1px solid var(--hacker-green);
-  color: var(--hacker-green);
-  padding: 0.5rem 1rem;
-  font-family: 'Fira Code', monospace;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.hacker-button:hover {
-  background: var(--hacker-green);
-  color: var(--terminal-bg);
-  box-shadow: 0 0 20px var(--hacker-green);
-}
-
-.hacker-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(57, 255, 20, 0.2),
-    transparent
-  );
-  transition: 0.5s;
-}
-
-.hacker-button:hover::before {
-  left: 100%;
-}
-
-/* Terminal Command Output */
-.command-output {
-  font-family: 'Fira Code', monospace;
-  white-space: pre-wrap;
-  color: var(--hacker-green);
-}
-
-.command-prompt {
-  color: var(--hacker-blue);
-}
-
-.command-input {
-  background: transparent;
-  border: none;
-  color: var(--hacker-green);
-  font-family: 'Fira Code', monospace;
-  outline: none;
-  width: 100%;
-}
-
-/* System Info Panel */
-.system-info {
-  background: rgba(10, 10, 10, 0.9);
-  border: 1px solid var(--hacker-green);
-  padding: 1rem;
-  font-family: 'Fira Code', monospace;
-}
-
-.system-info-item {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.5rem 0;
-}
-
-.system-info-label {
-  color: var(--hacker-blue);
-}
-
-.system-info-value {
-  color: var(--hacker-green);
-}
-
-/* Loading Animation */
-.loading-bar {
-  height: 2px;
-  background: var(--hacker-green);
-  animation: loading 2s infinite;
-}
-
-@keyframes loading {
-  0% { width: 0; }
-  50% { width: 100%; }
-  100% { width: 0; }
-}
-
-/* ASCII Art Container */
-.ascii-art {
-  font-family: 'VT323', monospace;
-  white-space: pre;
-  color: var(--hacker-green);
-  line-height: 1;
-}
-
-/* Hacker Card */
-.hacker-card {
-  background: rgba(10, 10, 10, 0.9);
-  border: 1px solid var(--hacker-green);
-  padding: 1.5rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.hacker-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    rgba(57, 255, 20, 0.1),
-    transparent
-  );
-  transform: rotate(45deg);
-  animation: shine 3s infinite;
-}
-
-@keyframes shine {
-  0% { transform: translateX(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) rotate(45deg); }
-}
-
-/* Responsive Design */
+/* Fix for mobile - prevent accidental scroll capturing */
 @media (max-width: 768px) {
-  .terminal-window {
-    margin: 1rem;
+  .prevent-scroll-jump {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    position: relative; /* Creates stacking context */
+    contain: layout paint style; /* Optimize rendering */
   }
   
-  .system-info {
-    font-size: 0.9rem;
+  /* Stronger prevention for specifically problematic components */
+  .prevent-scroll-jump::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    display: block;
+    pointer-events: none;
   }
   
-  .ascii-art {
-    font-size: 0.8rem;
+  /* For landscape mobile, use even stronger prevention */
+  @media (orientation: landscape) {
+    .prevent-scroll-jump {
+      touch-action: none;
+    }
+    
+    /* Use GPU acceleration for smoother rendering */
+    .no-scroll-capture {
+      transform: translateZ(0);
+      will-change: transform;
+    }
   }
 }
 
-/* Accessibility */
-@media (prefers-reduced-motion) {
-  .glitch-text,
-  .hacker-button::before,
-  .loading-bar,
-  .hacker-card::before {
-    animation: none;
-  }
-}
-
-/* 3D Profile Picture Styles */
-.profile-3d-container {
+/* Add a higher stacking context for interactive components */
+.interactive-component {
   position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 50%;
+  z-index: 20;
+  touch-action: manipulation;
+  will-change: transform;
 }
 
-.profile-3d-canvas {
-  position: absolute !important;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
+/* Prevent auto-scrolling for elements with this class */
+.no-auto-scroll {
+  scroll-margin-top: 100vh;
+  scroll-snap-align: none;
+  overscroll-behavior: none;
+  touch-action: none;
+  scroll-behavior: auto !important;
 }
 
-/* Fallback image styles with animation effects */
-.glitch-effect {
-  animation: glitch 0.5s infinite;
-}
-
-@keyframes glitch {
-  0% {
-    transform: translate(0);
-    filter: hue-rotate(0deg);
-  }
-  25% {
-    transform: translate(1px, -1px);
-    filter: hue-rotate(90deg) brightness(1.1);
-  }
-  50% {
-    transform: translate(-1px, 1px);
-    filter: hue-rotate(180deg);
-  }
-  75% {
-    transform: translate(1px, 1px);
-    filter: hue-rotate(270deg) brightness(0.9);
-  }
-  100% {
-    transform: translate(0);
-    filter: hue-rotate(360deg);
-  }
-}
-
-@keyframes scanline {
-  0% {
-    top: 0%;
-  }
-  100% {
-    top: 100%;
-  }
-}
-
-/* Ensure Three.js canvas is visible */
-canvas {
-  display: block !important;
-}
-
-/* Add specific styles for profile pictures */
-.auth-profile-pic canvas,
-.profile-3d-main canvas {
-  border-radius: 50%;
-}
-
-/* Mini globe container styles */
-.mini-globe-container {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-/* Profile picture globe integration */
-.password-profile-pic {
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.password-profile-pic:hover {
-  transform: scale(1.05);
-}
-
-.password-profile-pic canvas {
-  border-radius: 50%;
-}
-
-/* Styles for interactive password cracker globe */
-.password-globe-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.password-globe-container canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Glowing effect around 3D elements */
-.globe-glow {
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(57, 255, 20, 0.3) 0%, rgba(57, 255, 20, 0) 70%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Custom scrollbar for the password cracker */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--hacker-green-dim);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--hacker-green);
-}
-
-/* Add specific styles for profile pictures */
-.auth-profile-pic canvas,
-.profile-3d-main canvas {
-  border-radius: 50%;
-}
-
-/* Mini globe container styles */
-.mini-globe-container {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-/* Main interactive globe container */
-.interactive-globe {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 4px;
-}
-
-.interactive-globe canvas {
-  width: 100%;
-  height: 100%;
-}
-
-/* Glowing profile on hover */
-.relative.group:hover .absolute.-inset-1 {
-  animation: pulse-glow 2s infinite;
-}
-
-@keyframes pulse-glow {
-  0% {
-    filter: blur(8px);
-    opacity: 0.2;
-  }
-  50% {
-    filter: blur(12px);
-    opacity: 0.3;
-  }
-  100% {
-    filter: blur(8px);
-    opacity: 0.2;
-  }
+/* Make sure components don't force scrolling */
+#network-scanner-section,
+#network-scanner,
+#system-info-section,
+#system-info,
+.system-info-component,
+#terminal-section,
+#terminal,
+#hacker-terminal-component,
+.terminal-container {
+  scroll-margin-top: 100vh;
+  scroll-snap-align: none;
+  overscroll-behavior: none;
+  touch-action: none;
+  scroll-behavior: auto !important;
 }

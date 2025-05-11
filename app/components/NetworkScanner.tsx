@@ -60,7 +60,17 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
   // Scroll logs to bottom when new logs are added
   useEffect(() => {
     if (logEndRef.current) {
-      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      // Only scroll the log container, not the entire page
+      const logContainer = logEndRef.current.closest('.log-container');
+      if (logContainer) {
+        logContainer.scrollTop = logContainer.scrollHeight;
+      } else {
+        // Fallback with smooth scrolling that won't affect page position
+        const currentPageScroll = window.scrollY;
+        logEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Restore page scroll position
+        window.scrollTo(0, currentPageScroll);
+      }
     }
   }, [logs]);
 
@@ -344,8 +354,68 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     }
   };
 
+  // Prevent component from auto-scrolling into view
+  useEffect(() => {
+    // Get the component's container element
+    const componentEl = document.getElementById('network-scanner');
+    if (!componentEl) return;
+    
+    // Override any attempts to scroll this into view
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    
+    // Create a no-op function for this element
+    componentEl.scrollIntoView = function(options) {
+      // Do nothing - prevents scrolling
+      return;
+    };
+    
+    // Create a more aggressive scroll prevention
+    const preventScroll = () => {
+      // Check if we're near the NetworkScanner section
+      const rect = componentEl.getBoundingClientRect();
+      if (Math.abs(rect.top) < window.innerHeight) {
+        // We're near the component, restore user's previous position
+        window.scrollTo(0, window.scrollY);
+      }
+    };
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', preventScroll, { passive: true });
+    
+    // Run once immediately
+    preventScroll();
+    
+    // Set up a MutationObserver to watch for DOM changes that might trigger scrolling
+    const observer = new MutationObserver(() => {
+      preventScroll();
+    });
+    
+    // Start observing the document
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true, 
+      attributes: true,
+      characterData: true
+    });
+    
+    return () => {
+      // Restore original behavior on cleanup
+      if (componentEl) {
+        componentEl.scrollIntoView = originalScrollIntoView;
+      }
+      window.removeEventListener('scroll', preventScroll);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <div className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className}`}>
+    <div className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} no-auto-scroll`} 
+      style={{
+        scrollMarginTop: '100vh',
+        scrollSnapAlign: 'none',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+      }}>
       <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
         <div className="flex items-center">
           <FaNetworkWired className="text-green-500 mr-2" />
@@ -615,7 +685,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           </div>
         </div>
         
-        <div className="bg-black h-32 overflow-y-auto p-2 font-mono text-xs custom-scrollbar">
+        <div className="bg-black h-32 overflow-y-auto p-2 font-mono text-xs custom-scrollbar log-container">
           {logs.length > 0 ? (
             logs.map((log, idx) => (
               <div key={idx} className="text-green-400 mb-1">

@@ -214,7 +214,14 @@ const HackerTerminal = () => {
   useEffect(() => {
     // Auto-scroll to bottom when commands are added
     if (terminalRef.current) {
+      // Save current page scroll position before scrolling the terminal
+      const pageScrollPosition = window.scrollY;
+      
+      // Scroll only within the terminal container
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+      
+      // Restore the page scroll position
+      window.scrollTo(0, pageScrollPosition);
     }
     
     // Focus input after each command
@@ -222,6 +229,58 @@ const HackerTerminal = () => {
       inputRef.current.focus();
     }
   }, [commands, bootComplete]);
+
+  // Prevent terminal from auto-scrolling the page
+  useEffect(() => {
+    // Create a unique ID for this component if not already exists
+    const componentId = 'hacker-terminal-component';
+    const componentEl = document.getElementById(componentId) || terminalRef.current;
+    if (!componentEl) return;
+    
+    // Override any attempts to scroll this into view
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    
+    // Create a no-op function for this element
+    componentEl.scrollIntoView = function(options) {
+      // Do nothing - prevents scrolling
+      return;
+    };
+    
+    // Create a more aggressive scroll prevention
+    const preventScroll = () => {
+      // Check if we're near the component
+      const rect = componentEl.getBoundingClientRect();
+      if (Math.abs(rect.top) < window.innerHeight) {
+        // Maintain current scroll position
+        window.scrollTo(0, window.scrollY);
+      }
+    };
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', preventScroll, { passive: true });
+    
+    // Set up a MutationObserver to watch for DOM changes that might trigger scrolling
+    const observer = new MutationObserver(() => {
+      preventScroll();
+    });
+    
+    // Start observing the document
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true,
+      attributes: true,
+      characterData: true
+    });
+    
+    return () => {
+      // Restore original behavior on cleanup
+      if (componentEl) {
+        componentEl.scrollIntoView = originalScrollIntoView;
+      }
+      window.removeEventListener('scroll', preventScroll);
+      observer.disconnect();
+    };
+  }, []);
 
   // Simulate boot sequence with realistic boot messages
   const simulateBootSequence = async () => {
@@ -1158,25 +1217,30 @@ const HackerTerminal = () => {
   };
 
   return (
-    <div className="neo-panel rounded-md overflow-hidden h-96 bg-black text-green-500">
-      {/* Terminal header */}
-      <div className="flex items-center justify-between bg-gray-900 px-4 py-2 border-b border-green-700">
+    <div className="neo-panel h-full flex flex-col">
+      <div className="flex justify-between items-center border-b border-green-500/30 p-2">
         <div className="flex items-center">
-          <FaTerminal className="mr-2" />
-          <span className="font-mono text-sm">{terminalTitle}</span>
+          <FaTerminal className="text-green-500 mr-2" />
+          <span className="text-green-400 font-mono">{terminalTitle}</span>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex space-x-1">
           <div className="w-3 h-3 rounded-full bg-red-500"></div>
           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
       </div>
       
-      {/* Terminal content */}
       <div 
         ref={terminalRef}
-        className={`font-mono text-sm h-full overflow-y-auto p-4 ${isGlitching ? 'glitch' : ''}`}
-        style={{ scrollBehavior: 'smooth' }}
+        id="hacker-terminal-component"
+        className={`font-mono text-sm h-full overflow-y-auto p-4 ${isGlitching ? 'glitch' : ''} no-auto-scroll terminal-container`}
+        style={{ 
+          scrollBehavior: 'smooth',
+          scrollMarginTop: '100vh',
+          scrollSnapAlign: 'none',
+          overscrollBehavior: 'none',
+          touchAction: 'none'
+        }}
       >
         {commands.map((cmd, i) => (
           <div key={i} className="mb-1">
