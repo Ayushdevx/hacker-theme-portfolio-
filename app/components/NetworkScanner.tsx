@@ -41,6 +41,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
   const animationRef = useRef<number | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const commonPorts = [
     { port: 21, service: 'FTP' },
@@ -59,15 +60,33 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     { port: 5900, service: 'VNC' },
   ];
 
-  // Add network visualization animation
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+      setIsMobile(isMobileDevice);
+    }
+  }, []);
+
   useEffect(() => {
     const canvas = document.getElementById('network-canvas') as HTMLCanvasElement;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
-    // Network nodes
+
+    const resizeCanvas = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+      }
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
     const nodes: Array<{
       x: number,
       y: number,
@@ -77,68 +96,58 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
       speedY: number,
       connections: number[]
     }> = [];
-    
-    // Generate random nodes
+
     const generateNodes = () => {
-      nodes.length = 0; // Clear existing nodes
-      const numNodes = Math.floor(Math.random() * 5) + 8; // 8-12 nodes
-      
-      // Generate main nodes
+      nodes.length = 0;
+      const numNodes = Math.floor(Math.random() * 5) + 8;
+
       for (let i = 0; i < numNodes; i++) {
         nodes.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: Math.random() * 2 + 2,
-          color: i === 0 ? '#10B981' : // First node is green (scanner)
-                 Math.random() > 0.8 ? '#EF4444' : // Some red nodes (vulnerable)
-                 '#3B82F6', // Default blue
+          color: i === 0 ? '#10B981' :
+                 Math.random() > 0.8 ? '#EF4444' :
+                 '#3B82F6',
           speedX: (Math.random() - 0.5) * 0.3,
           speedY: (Math.random() - 0.5) * 0.3,
           connections: []
         });
       }
-      
-      // Create connections - each node connects to 1-3 other nodes
+
       nodes.forEach((node, i) => {
         const numConnections = Math.floor(Math.random() * 3) + 1;
         for (let j = 0; j < numConnections; j++) {
-          // Pick a random node to connect to
           let targetIndex;
           do {
             targetIndex = Math.floor(Math.random() * nodes.length);
           } while (targetIndex === i || node.connections.includes(targetIndex));
-          
-          // Add bidirectional connection
+
           node.connections.push(targetIndex);
           nodes[targetIndex].connections.push(i);
         }
       });
     };
-    
-    // Draw the network
+
     const drawNetwork = () => {
-      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw connections
+
       nodes.forEach((node, i) => {
         node.connections.forEach(targetIndex => {
           const target = nodes[targetIndex];
-          
-          // Draw connection line
+
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
           ctx.lineTo(target.x, target.y);
-          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)'; // Light green with transparency
+          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)';
           ctx.lineWidth = 0.5;
           ctx.stroke();
-          
-          // Occasionally draw "data packet" moving along the connection
+
           if (Math.random() > 0.98) {
             const packetProgress = Math.random();
             const packetX = node.x + (target.x - node.x) * packetProgress;
             const packetY = node.y + (target.y - node.y) * packetProgress;
-            
+
             ctx.beginPath();
             ctx.arc(packetX, packetY, 1.5, 0, Math.PI * 2);
             ctx.fillStyle = '#10B981';
@@ -146,107 +155,86 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           }
         });
       });
-      
-      // Draw nodes
+
       nodes.forEach(node => {
-        // Node glow effect
         const gradient = ctx.createRadialGradient(
           node.x, node.y, node.radius / 2,
           node.x, node.y, node.radius * 2
         );
         gradient.addColorStop(0, node.color);
         gradient.addColorStop(1, 'rgba(0,0,0,0)');
-        
+
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
         ctx.fill();
-        
-        // Node circle
+
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
         ctx.fillStyle = node.color;
         ctx.fill();
-        
-        // Move node for next frame
+
         node.x += node.speedX;
         node.y += node.speedY;
-        
-        // Bounce off edges
+
         if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
         if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
       });
-      
-      // Request next animation frame
+
       animationRef.current = requestAnimationFrame(drawNetwork);
     };
-    
-    // Initialize and start animation
+
     generateNodes();
     animationRef.current = requestAnimationFrame(drawNetwork);
-    
-    // Regenerate network every 15 seconds
+
     const intervalId = setInterval(() => {
       generateNodes();
     }, 15000);
-    
-    // Cleanup
+
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       clearInterval(intervalId);
+      window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 
-  // Scroll logs to bottom when new logs are added
   useEffect(() => {
     if (logEndRef.current) {
-      // Only scroll the log container, not the entire page
       const logContainer = logEndRef.current.closest('.log-container');
       if (logContainer) {
         logContainer.scrollTop = logContainer.scrollHeight;
-      } else {
-        // Fallback with smooth scrolling that won't affect page position
-        const currentPageScroll = window.scrollY;
-        logEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        // Restore page scroll position
-        window.scrollTo(0, currentPageScroll);
       }
     }
   }, [logs]);
 
-  // Random network activity for visual effect
   useEffect(() => {
     const interval = setInterval(() => {
-      // Random glitch effect
       if (Math.random() > 0.95) {
         setIsGlitching(true);
         setTimeout(() => setIsGlitching(false), 150);
       }
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
-  // Function to add a log message
   const addLog = (message: string) => {
     const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
-    setLogs(prev => [...prev.slice(-50), `[${timestamp}] ${message}`]); // Keep last 50 logs
+    setLogs(prev => [...prev.slice(-50), `[${timestamp}] ${message}`]);
   };
 
-  // Generate a realistic hostname for an IP
   const generateHostname = (ip: string): string => {
     const lastOctet = parseInt(ip.split('.')[3], 10);
-    
+
     if (lastOctet === 1) return 'router.local';
     if (lastOctet === 254) return 'firewall.local';
-    
+
     const deviceTypes = ['desktop', 'laptop', 'server', 'iot', 'camera', 'printer'];
     const deviceType = deviceTypes[Math.floor(Math.random() * deviceTypes.length)];
-    
+
     return `${deviceType}-${lastOctet}.local`;
   };
 
-  // Generate an OS based on hostname
   const generateOS = (hostname: string): string => {
     if (hostname.includes('server')) {
       return Math.random() > 0.5 ? 'Ubuntu Server 22.04' : 'CentOS 8';
@@ -266,11 +254,9 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     }
   };
 
-  // Generate vulnerability data for open ports
   const generateVulnerabilityData = (service: string, port: number): { isVulnerable: boolean, desc?: string } => {
-    // Only some percentage of services are vulnerable
     if (Math.random() > 0.3) return { isVulnerable: false };
-    
+
     const vulnDescriptions: Record<string, string[]> = {
       'SSH': [
         'Weak password policy detected',
@@ -304,13 +290,13 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
         'Default credentials'
       ]
     };
-    
+
     const defaultVulns = [
       'Default credentials detected',
       'Service outdated',
       'Misconfiguration detected'
     ];
-    
+
     const vulns = vulnDescriptions[service] || defaultVulns;
     return {
       isVulnerable: true,
@@ -318,30 +304,26 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     };
   };
 
-  // Start network scanning
   const startScan = () => {
     setScanning(true);
     setResults([]);
     setProgress(0);
     setLogs([]);
     setSelectedIP(null);
-    
-    // Log the start of scan
+
     addLog(`Starting ${scanType} scan on target ${target}`);
     addLog('Initializing scanner...');
-    
+
     const startTime = new Date().toISOString();
-    
+
     let currentProgress = 0;
-    const totalHosts = Math.floor(Math.random() * 10) + 15; // 15-25 hosts
+    const totalHosts = Math.floor(Math.random() * 10) + 15;
     const scannedIPs = new Set<string>();
     let vulnerabilitiesFound = 0;
-    
-    // Different scan speed based on scan type
-    const scanInterval = scanType === 'quick' ? 250 : 
-                          scanType === 'full' ? 400 : 600; // Stealth is slower
-    
-    // Create a unique list of IPs to scan
+
+    const scanInterval = scanType === 'quick' ? 250 :
+                          scanType === 'full' ? 400 : 600;
+
     const ipList: string[] = [];
     while (ipList.length < totalHosts) {
       const ip = `192.168.1.${Math.floor(Math.random() * 254) + 1}`;
@@ -350,15 +332,15 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
         scannedIPs.add(ip);
       }
     }
-    
+
     let ipIndex = 0;
     let totalPortsScanned = 0;
-    
+
     const interval = setInterval(() => {
       if (currentProgress >= 100) {
         clearInterval(interval);
         setScanning(false);
-        
+
         const endTime = new Date().toISOString();
         setScanDetails({
           startTime,
@@ -367,23 +349,20 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           portsScanned: totalPortsScanned,
           vulnerabilitiesFound
         });
-        
+
         addLog(`Scan completed. Found ${vulnerabilitiesFound} vulnerabilities across ${scannedIPs.size} hosts.`);
-        
-        // Trigger glitch effect at scan completion
+
         setIsGlitching(true);
         setTimeout(() => setIsGlitching(false), 300);
-        
+
         return;
       }
 
-      // Progress increment based on scan type
-      const progressIncrement = scanType === 'quick' ? 5 : 
+      const progressIncrement = scanType === 'quick' ? 5 :
                                 scanType === 'full' ? 3 : 2;
       currentProgress += progressIncrement;
       setProgress(Math.min(currentProgress, 100));
-      
-      // Add contextual logs during scan
+
       if (currentProgress < 20 && Math.random() > 0.7) {
         addLog('Performing ping sweep...');
       } else if (currentProgress >= 20 && currentProgress < 40 && Math.random() > 0.7) {
@@ -396,47 +375,41 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
         addLog('Analyzing vulnerability data...');
       }
 
-      // For each scan cycle, choose an IP and scan 1-3 ports
       if (ipIndex < ipList.length) {
         const ip = ipList[ipIndex];
         const hostname = generateHostname(ip);
         const os = generateOS(hostname);
-        
-        // Log when scanning a new host
+
         if (Math.random() > 0.7) {
           addLog(`Scanning ${hostname} (${ip})...`);
         }
-        
-        // Scan 1-3 ports per cycle
+
         const numPortsToScan = Math.floor(Math.random() * 3) + 1;
         const usedPortIndices = new Set<number>();
-        
+
         for (let i = 0; i < numPortsToScan; i++) {
           let portIndex = Math.floor(Math.random() * commonPorts.length);
-          
-          // Avoid duplicate ports
+
           while (usedPortIndices.has(portIndex)) {
             portIndex = Math.floor(Math.random() * commonPorts.length);
           }
           usedPortIndices.add(portIndex);
-          
+
           const port = commonPorts[portIndex];
           const isOpen = Math.random() > 0.7;
-          
-          // Only process if port is open
+
           if (isOpen) {
             const { isVulnerable, desc } = generateVulnerabilityData(port.service, port.port);
-            
+
             if (isVulnerable && desc) {
               vulnerabilitiesFound++;
-              // Log vulnerability found
               if (Math.random() > 0.5) {
                 addLog(`WARNING: ${desc} on ${hostname} (${ip}:${port.port})`);
               }
             }
-            
+
             totalPortsScanned++;
-            
+
             const newResult: ScanResult = {
               ip,
               port: port.port,
@@ -449,13 +422,12 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
               os,
               ping: Math.floor(Math.random() * 100) + 5
             };
-            
+
             setResults(prev => [...prev, newResult]);
           } else {
-            // For closed ports, only sometimes add them to results depending on scan type
             if (scanType === 'full' && Math.random() > 0.7) {
               totalPortsScanned++;
-              
+
               const newResult: ScanResult = {
                 ip,
                 port: port.port,
@@ -466,159 +438,19 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
                 os,
                 ping: Math.floor(Math.random() * 100) + 5
               };
-              
+
               setResults(prev => [...prev, newResult]);
             }
           }
         }
-        
+
         ipIndex++;
       }
     }, scanInterval);
-    
-    // Cleanup on component unmount
+
     return () => clearInterval(interval);
   };
 
-  // Add network visualization animation
-  useEffect(() => {
-    const canvas = document.getElementById('network-canvas') as HTMLCanvasElement;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Network nodes
-    const nodes: Array<{
-      x: number,
-      y: number,
-      radius: number,
-      color: string,
-      speedX: number,
-      speedY: number,
-      connections: number[]
-    }> = [];
-    
-    // Generate random nodes
-    const generateNodes = () => {
-      nodes.length = 0; // Clear existing nodes
-      const numNodes = Math.floor(Math.random() * 5) + 8; // 8-12 nodes
-      
-      // Generate main nodes
-      for (let i = 0; i < numNodes; i++) {
-        nodes.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 2,
-          color: i === 0 ? '#10B981' : // First node is green (scanner)
-                 Math.random() > 0.8 ? '#EF4444' : // Some red nodes (vulnerable)
-                 '#3B82F6', // Default blue
-          speedX: (Math.random() - 0.5) * 0.3,
-          speedY: (Math.random() - 0.5) * 0.3,
-          connections: []
-        });
-      }
-      
-      // Create connections - each node connects to 1-3 other nodes
-      nodes.forEach((node, i) => {
-        const numConnections = Math.floor(Math.random() * 3) + 1;
-        for (let j = 0; j < numConnections; j++) {
-          // Pick a random node to connect to
-          let targetIndex;
-          do {
-            targetIndex = Math.floor(Math.random() * nodes.length);
-          } while (targetIndex === i || node.connections.includes(targetIndex));
-          
-          // Add bidirectional connection
-          node.connections.push(targetIndex);
-          nodes[targetIndex].connections.push(i);
-        }
-      });
-    };
-    
-    // Draw the network
-    const drawNetwork = () => {
-      // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw connections
-      nodes.forEach((node, i) => {
-        node.connections.forEach(targetIndex => {
-          const target = nodes[targetIndex];
-          
-          // Draw connection line
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(target.x, target.y);
-          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)'; // Light green with transparency
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-          
-          // Occasionally draw "data packet" moving along the connection
-          if (Math.random() > 0.98) {
-            const packetProgress = Math.random();
-            const packetX = node.x + (target.x - node.x) * packetProgress;
-            const packetY = node.y + (target.y - node.y) * packetProgress;
-            
-            ctx.beginPath();
-            ctx.arc(packetX, packetY, 1.5, 0, Math.PI * 2);
-            ctx.fillStyle = '#10B981';
-            ctx.fill();
-          }
-        });
-      });
-      
-      // Draw nodes
-      nodes.forEach(node => {
-        // Node glow effect
-        const gradient = ctx.createRadialGradient(
-          node.x, node.y, node.radius / 2,
-          node.x, node.y, node.radius * 2
-        );
-        gradient.addColorStop(0, node.color);
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
-        
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        
-        // Node circle
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = node.color;
-        ctx.fill();
-        
-        // Move node for next frame
-        node.x += node.speedX;
-        node.y += node.speedY;
-        
-        // Bounce off edges
-        if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
-        if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
-      });
-      
-      // Request next animation frame
-      animationRef.current = requestAnimationFrame(drawNetwork);
-    };
-    
-    // Initialize and start animation
-    generateNodes();
-    animationRef.current = requestAnimationFrame(drawNetwork);
-    
-    // Regenerate network every 15 seconds
-    const intervalId = setInterval(() => {
-      generateNodes();
-    }, 15000);
-    
-    // Cleanup
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      clearInterval(intervalId);
-    };
-  }, []);
-  
-  // Get icon for a service
   const getServiceIcon = (service: string) => {
     switch (service.toLowerCase()) {
       case 'http':
@@ -633,67 +465,31 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     }
   };
 
-  // Prevent component from auto-scrolling into view
   useEffect(() => {
-    // Get the component's container element
+    if (isMobile) return;
+
     const componentEl = document.getElementById('network-scanner');
     if (!componentEl) return;
-    
-    // Override any attempts to scroll this into view
+
     const originalScrollIntoView = Element.prototype.scrollIntoView;
-    
-    // Create a no-op function for this element
+
     componentEl.scrollIntoView = function(options) {
-      // Do nothing - prevents scrolling
       return;
     };
-    
-    // Create a more aggressive scroll prevention
-    const preventScroll = () => {
-      // Check if we're near the NetworkScanner section
-      const rect = componentEl.getBoundingClientRect();
-      if (Math.abs(rect.top) < window.innerHeight) {
-        // We're near the component, restore user's previous position
-        window.scrollTo(0, window.scrollY);
-      }
-    };
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', preventScroll, { passive: true });
-    
-    // Run once immediately
-    preventScroll();
-    
-    // Set up a MutationObserver to watch for DOM changes that might trigger scrolling
-    const observer = new MutationObserver(() => {
-      preventScroll();
-    });
-    
-    // Start observing the document
-    observer.observe(document.body, { 
-      childList: true, 
-      subtree: true, 
-      attributes: true,
-      characterData: true
-    });
-    
+
     return () => {
-      // Restore original behavior on cleanup
       if (componentEl) {
         componentEl.scrollIntoView = originalScrollIntoView;
       }
-      window.removeEventListener('scroll', preventScroll);
-      observer.disconnect();
     };
-  }, []);
+  }, [isMobile]);
 
   return (
-    <div className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} no-auto-scroll`} 
+    <div id="network-scanner" className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className}`} 
       style={{
         scrollMarginTop: '100vh',
         scrollSnapAlign: 'none',
-        overscrollBehavior: 'none',
-        touchAction: 'none',
+        touchAction: isMobile ? 'auto' : 'none',
       }}>
       <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
         <div className="flex items-center justify-center w-full md:w-auto mb-2 md:mb-0">

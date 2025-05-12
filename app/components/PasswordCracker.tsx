@@ -598,35 +598,13 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
         return 'Unknown';
     }
   };
-
   return (
     <div 
       className={`${className} w-full bg-[#030014] text-green-500 p-4 rounded-lg relative overflow-hidden shadow-2xl border border-green-500/30 prevent-scroll-jump neo-panel`}
       style={{ 
-        touchAction: 'pan-y', 
         willChange: 'transform',
         scrollMarginTop: '100vh',
-        scrollMarginBottom: '100vh',
-        scrollSnapAlign: 'none',
-        overscrollBehavior: 'none'
-      }}
-      onClick={(e) => {
-        // Prevent clicks from causing scroll jumps
-        e.stopPropagation();
-      }}
-      onTouchStart={(e) => {
-        // Stop propagation to prevent container from hijacking scrolls
-        e.stopPropagation();
-      }}
-      onTouchMove={(e) => {
-        // Block touch movement to prevent scroll jumps
-        e.stopPropagation();
-        const target = e.target as HTMLElement;
-        // Only allow scrolling in scrollable containers
-        const isScrollable = target.closest('.overflow-y-auto') || target.closest('.overflow-auto');
-        if (!isScrollable) {
-          e.preventDefault();
-        }
+        scrollMarginBottom: '100vh'
       }}
     >
       {!isReady ? (
