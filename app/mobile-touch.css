@@ -1,0 +1,75 @@
+/* Mobile-specific touch handling CSS */
+
+/* Apply touch-friendly styles to all components with the mobile-friendly class */
+.mobile-friendly {
+  touch-action: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: auto !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+/* Touch-specific overrides for mobile devices */
+@media (max-width: 768px) {
+  /* Fix grid layout for better mobile experience */
+  .grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Make scrollable containers more accessible on touch */
+  .mobile-friendly .overflow-y-auto,
+  .mobile-friendly .overflow-auto,
+  .mobile-friendly .scroll-container,
+  .mobile-friendly .log-container {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: auto !important;
+    max-height: 50vh !important;
+    touch-action: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+  
+  /* Fix for canvas elements to not interfere with scrolling */
+  .mobile-friendly canvas:not(.interactive-canvas) {
+    pointer-events: none !important;
+    touch-action: none !important;
+  }
+  
+  /* Make touch targets larger */
+  .mobile-friendly button,
+  .mobile-friendly a,
+  .mobile-friendly input {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 10px !important;
+  }
+  
+  /* Fix overflow issues */
+  .mobile-scroll-enabled {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .mobile-friendly {
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Fix momentum scrolling for iOS */
+  .mobile-friendly .overflow-y-auto,
+  .mobile-friendly .overflow-auto {
+    overflow-y: auto !important;
+  }
+}
+
+/* Android-specific fixes */
+@supports not (-webkit-touch-callout: none) {
+  .mobile-friendly .overflow-y-auto,
+  .mobile-friendly .overflow-auto {
+    overscroll-behavior-y: contain !important;
+  }
+}
