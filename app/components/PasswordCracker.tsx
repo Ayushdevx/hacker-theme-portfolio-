@@ -75,12 +75,11 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
   const [showComplexityAnalyzer, setShowComplexityAnalyzer] = useState(false);
   const [showGlobe, setShowGlobe] = useState(false);
   const [profilePicHover, setProfilePicHover] = useState(false);
-  
-  // New enhanced states
+    // New enhanced states
   const [breachLocations, setBreachLocations] = useState<BreachLocation[]>([]);
   const [particleConfig, setParticleConfig] = useState<ParticleConfig>({
     count: 50,
-    color: '#39ff14',
+    color: '#10B981', // Changed to match portfolio green color
     speed: 1,
     size: 2,
     active: false
@@ -602,7 +601,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
 
   return (
     <div 
-      className={`${className} w-full bg-gray-900 text-green-500 p-4 rounded-lg relative overflow-hidden shadow-2xl border border-green-500 border-opacity-30 prevent-scroll-jump`}
+      className={`${className} w-full bg-[#030014] text-green-500 p-4 rounded-lg relative overflow-hidden shadow-2xl border border-green-500/30 prevent-scroll-jump neo-panel`}
       style={{ 
         touchAction: 'pan-y', 
         willChange: 'transform',
@@ -708,9 +707,8 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
             {activeTab === 'crack' && (
               <div className="fade-in">
                 <div className="grid grid-cols-1 gap-4">
-                  {/* Configuration panel */}
-                  <div className="bg-gray-800 bg-opacity-70 p-3 rounded-lg">
-                    <h3 className="font-mono text-sm mb-3 border-b border-green-500 border-opacity-20 pb-1">Target Selection</h3>
+                  {/* Configuration panel */}                  <div className="bg-[#030014]/80 p-3 rounded-lg shadow-[#2A0E61]/50">
+                    <h3 className="font-mono text-sm mb-3 border-b border-green-500/20 pb-1">Target Selection</h3>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="mb-4 sm:mb-0">
@@ -724,7 +722,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                               playSound('typing');
                             }}
                             placeholder="Enter password or hash"
-                            className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded-l border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
+                            className="w-full bg-black text-green-400 px-2 py-1 rounded-l border border-green-500/30 focus:outline-none focus:ring-1 focus:ring-green-500/50"
                           />
                           <button
                             onClick={() => {
@@ -733,15 +731,14 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                               addLog(`Selected random common password: ${randomPassword}`);
                               playSound('click');
                             }}
-                            className="bg-gray-700 text-green-400 px-2 py-1 rounded-r border border-green-500 border-opacity-30 border-l-0 hover:bg-gray-600"
+                            className="bg-[#2A0E61] text-green-400 px-2 py-1 rounded-r border border-green-500/30 border-l-0 hover:bg-[#4A1E91]"
                             aria-label="Use random password"
                           >
                             <FaRandom />
                           </button>
                         </div>
                       </div>
-                      
-                      <div className="mb-4 sm:mb-0">
+                        <div className="mb-4 sm:mb-0">
                         <label className="block text-xs mb-1 text-green-400">Attack Method</label>
                         <select
                           value={method}
@@ -750,7 +747,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                             addLog(`Changed attack method to ${e.target.value}`);
                             playSound('click');
                           }}
-                          className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
+                          className="w-full bg-black text-green-400 px-2 py-1 rounded border border-green-500/30 focus:outline-none focus:ring-1 focus:ring-green-500/50"
                         >
                           {methods.map(m => (
                             <option key={m.id} value={m.id}>{m.name}</option>
@@ -759,15 +756,14 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                       </div>
                       
                       <div className="mb-4 sm:mb-0">
-                        <label className="block text-xs mb-1 text-green-400">Hash Type</label>
-                        <select
+                        <label className="block text-xs mb-1 text-green-400">Hash Type</label>                        <select
                           value={hashType}
                           onChange={(e) => {
                             setHashType(e.target.value);
                             addLog(`Changed hash type to ${e.target.value}`);
                             playSound('click');
                           }}
-                          className="w-full bg-gray-900 text-green-300 px-2 py-1 rounded border border-green-500 border-opacity-30 focus:outline-none focus:border-green-400"
+                          className="w-full bg-black text-green-400 px-2 py-1 rounded border border-green-500/30 focus:outline-none focus:ring-1 focus:ring-green-500/50"
                         >
                           {hashTypes.map(h => (
                             <option key={h.id} value={h.id}>{h.name}</option>
@@ -825,9 +821,8 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                       </div>
                     </div>
                   </div>
-                    {/* Visualization panel */}
-                  <div className="bg-gray-800 bg-opacity-70 p-3 rounded-lg">
-                    <h3 className="font-mono text-sm mb-3 border-b border-green-500 border-opacity-20 pb-1">Cracking Progress</h3>
+                    {/* Visualization panel */}                  <div className="bg-[#030014]/80 p-3 rounded-lg shadow-[#2A0E61]/50">
+                    <h3 className="font-mono text-sm mb-3 border-b border-green-500/20 pb-1">Cracking Progress</h3>
                     
                     {/* Password Found Alert */}
                     {passwordFound && (
@@ -877,7 +872,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                     )}
                     
                     {/* Attempt Log */}
-                    <div className="max-h-40 overflow-y-auto bg-gray-900 rounded p-2 border border-green-500 border-opacity-20 text-xs font-mono">
+                    <div className="max-h-40 overflow-y-auto bg-black/80 rounded p-2 border border-green-500/20 text-xs font-mono">
                       <div className="overflow-x-auto">
                         <table className="w-full">
                           <thead>
@@ -936,9 +931,8 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
               </div>
             )}              {/* Analyze tab content */}
             {activeTab === 'analyze' && (
-              <div className="fade-in">
-                <div className="bg-gray-800 bg-opacity-70 p-3 sm:p-4 rounded-lg">
-                  <h3 className="font-mono text-base sm:text-lg mb-3 border-b border-green-500 border-opacity-20 pb-1">Password Analyzer</h3>
+              <div className="fade-in">                <div className="bg-[#030014]/80 p-3 sm:p-4 rounded-lg shadow-[#2A0E61]/50">
+                  <h3 className="font-mono text-base sm:text-lg mb-3 border-b border-green-500/20 pb-1">Password Analyzer</h3>
                   
                   <div className="mb-4">
                     <label className="block text-sm mb-1 text-green-400">Enter Password to Analyze</label>
@@ -961,16 +955,14 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                     </div>
                   </div>
                   
-                  {complexity && (
-                    <div className="bg-gray-900 p-3 sm:p-4 rounded-lg border border-green-500 border-opacity-20">
+                  {complexity && (                      <div className="bg-black/80 p-3 sm:p-4 rounded-lg border border-green-500/20">
                       <h4 className="font-mono text-green-400 mb-3">Password Strength: {complexity.score.toFixed(0)}%</h4>
-                      
-                      <div className="w-full bg-gray-700 rounded-full h-2 mb-4 overflow-hidden">
+                        <div className="w-full bg-gray-900 rounded-full h-2 mb-4 overflow-hidden">
                         <div 
                           className={`h-2 rounded-full transition-all duration-300 ease-in-out ${
                             complexity.score < 30 ? 'bg-red-500' : 
                             complexity.score < 60 ? 'bg-yellow-500' : 
-                            complexity.score < 80 ? 'bg-blue-500' : 'bg-green-500'
+                            complexity.score < 80 ? 'bg-purple-500' : 'bg-green-500'
                           }`}
                           style={{ width: `${complexity.score}%` }}
                         />
@@ -1043,13 +1035,11 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
               </div>
             )}              {/* History tab content */}
             {activeTab === 'history' && (
-              <div className="fade-in">
-                <div className="bg-gray-800 bg-opacity-70 p-3 sm:p-4 rounded-lg">
-                  <h3 className="font-mono text-base sm:text-lg mb-3 border-b border-green-500 border-opacity-20 pb-1">Password Breach History</h3>
+              <div className="fade-in">                <div className="bg-[#030014]/80 p-3 sm:p-4 rounded-lg shadow-[#2A0E61]/50">
+                  <h3 className="font-mono text-base sm:text-lg mb-3 border-b border-green-500/20 pb-1">Password Breach History</h3>
                   
                   {isClient ? (
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="bg-gray-900 rounded-lg p-3 border border-green-500 border-opacity-20">
+                    <div className="grid grid-cols-1 gap-4">                      <div className="bg-black/80 rounded-lg p-3 border border-green-500/20">
                         <h4 className="font-mono text-xs sm:text-sm text-green-400 mb-2">Recent Breaches</h4>
                         <div className="max-h-40 sm:max-h-60 overflow-y-auto">
                           <div className="overflow-x-auto">
@@ -1086,8 +1076,7 @@ const PasswordCracker = ({ className = "" }: PasswordCrackerProps) => {
                               <span className="font-mono">
                                 {breachLocations.reduce((total, breach) => total + breach.count, 0).toLocaleString()}
                               </span>
-                            </div>
-                            <div className="w-full bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                            </div>                            <div className="w-full bg-gray-900 rounded-full h-1.5 overflow-hidden">
                               <div className="bg-red-500 h-1.5 w-full" />
                             </div>
                           </div>

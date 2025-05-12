@@ -40,6 +40,7 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
   } | null>(null);
   const animationRef = useRef<number | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const commonPorts = [
     { port: 21, service: 'FTP' },
@@ -57,6 +58,145 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     { port: 3389, service: 'RDP' },
     { port: 5900, service: 'VNC' },
   ];
+
+  // Add network visualization animation
+  useEffect(() => {
+    const canvas = document.getElementById('network-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Network nodes
+    const nodes: Array<{
+      x: number,
+      y: number,
+      radius: number,
+      color: string,
+      speedX: number,
+      speedY: number,
+      connections: number[]
+    }> = [];
+    
+    // Generate random nodes
+    const generateNodes = () => {
+      nodes.length = 0; // Clear existing nodes
+      const numNodes = Math.floor(Math.random() * 5) + 8; // 8-12 nodes
+      
+      // Generate main nodes
+      for (let i = 0; i < numNodes; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 2,
+          color: i === 0 ? '#10B981' : // First node is green (scanner)
+                 Math.random() > 0.8 ? '#EF4444' : // Some red nodes (vulnerable)
+                 '#3B82F6', // Default blue
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          connections: []
+        });
+      }
+      
+      // Create connections - each node connects to 1-3 other nodes
+      nodes.forEach((node, i) => {
+        const numConnections = Math.floor(Math.random() * 3) + 1;
+        for (let j = 0; j < numConnections; j++) {
+          // Pick a random node to connect to
+          let targetIndex;
+          do {
+            targetIndex = Math.floor(Math.random() * nodes.length);
+          } while (targetIndex === i || node.connections.includes(targetIndex));
+          
+          // Add bidirectional connection
+          node.connections.push(targetIndex);
+          nodes[targetIndex].connections.push(i);
+        }
+      });
+    };
+    
+    // Draw the network
+    const drawNetwork = () => {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw connections
+      nodes.forEach((node, i) => {
+        node.connections.forEach(targetIndex => {
+          const target = nodes[targetIndex];
+          
+          // Draw connection line
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(target.x, target.y);
+          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)'; // Light green with transparency
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          
+          // Occasionally draw "data packet" moving along the connection
+          if (Math.random() > 0.98) {
+            const packetProgress = Math.random();
+            const packetX = node.x + (target.x - node.x) * packetProgress;
+            const packetY = node.y + (target.y - node.y) * packetProgress;
+            
+            ctx.beginPath();
+            ctx.arc(packetX, packetY, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#10B981';
+            ctx.fill();
+          }
+        });
+      });
+      
+      // Draw nodes
+      nodes.forEach(node => {
+        // Node glow effect
+        const gradient = ctx.createRadialGradient(
+          node.x, node.y, node.radius / 2,
+          node.x, node.y, node.radius * 2
+        );
+        gradient.addColorStop(0, node.color);
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+        
+        // Move node for next frame
+        node.x += node.speedX;
+        node.y += node.speedY;
+        
+        // Bounce off edges
+        if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
+        if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
+      });
+      
+      // Request next animation frame
+      animationRef.current = requestAnimationFrame(drawNetwork);
+    };
+    
+    // Initialize and start animation
+    generateNodes();
+    animationRef.current = requestAnimationFrame(drawNetwork);
+    
+    // Regenerate network every 15 seconds
+    const intervalId = setInterval(() => {
+      generateNodes();
+    }, 15000);
+    
+    // Cleanup
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      clearInterval(intervalId);
+    };
+  }, []);
+
   // Scroll logs to bottom when new logs are added
   useEffect(() => {
     if (logEndRef.current) {
@@ -339,6 +479,145 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     // Cleanup on component unmount
     return () => clearInterval(interval);
   };
+
+  // Add network visualization animation
+  useEffect(() => {
+    const canvas = document.getElementById('network-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Network nodes
+    const nodes: Array<{
+      x: number,
+      y: number,
+      radius: number,
+      color: string,
+      speedX: number,
+      speedY: number,
+      connections: number[]
+    }> = [];
+    
+    // Generate random nodes
+    const generateNodes = () => {
+      nodes.length = 0; // Clear existing nodes
+      const numNodes = Math.floor(Math.random() * 5) + 8; // 8-12 nodes
+      
+      // Generate main nodes
+      for (let i = 0; i < numNodes; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 2,
+          color: i === 0 ? '#10B981' : // First node is green (scanner)
+                 Math.random() > 0.8 ? '#EF4444' : // Some red nodes (vulnerable)
+                 '#3B82F6', // Default blue
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          connections: []
+        });
+      }
+      
+      // Create connections - each node connects to 1-3 other nodes
+      nodes.forEach((node, i) => {
+        const numConnections = Math.floor(Math.random() * 3) + 1;
+        for (let j = 0; j < numConnections; j++) {
+          // Pick a random node to connect to
+          let targetIndex;
+          do {
+            targetIndex = Math.floor(Math.random() * nodes.length);
+          } while (targetIndex === i || node.connections.includes(targetIndex));
+          
+          // Add bidirectional connection
+          node.connections.push(targetIndex);
+          nodes[targetIndex].connections.push(i);
+        }
+      });
+    };
+    
+    // Draw the network
+    const drawNetwork = () => {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw connections
+      nodes.forEach((node, i) => {
+        node.connections.forEach(targetIndex => {
+          const target = nodes[targetIndex];
+          
+          // Draw connection line
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(target.x, target.y);
+          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)'; // Light green with transparency
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          
+          // Occasionally draw "data packet" moving along the connection
+          if (Math.random() > 0.98) {
+            const packetProgress = Math.random();
+            const packetX = node.x + (target.x - node.x) * packetProgress;
+            const packetY = node.y + (target.y - node.y) * packetProgress;
+            
+            ctx.beginPath();
+            ctx.arc(packetX, packetY, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#10B981';
+            ctx.fill();
+          }
+        });
+      });
+      
+      // Draw nodes
+      nodes.forEach(node => {
+        // Node glow effect
+        const gradient = ctx.createRadialGradient(
+          node.x, node.y, node.radius / 2,
+          node.x, node.y, node.radius * 2
+        );
+        gradient.addColorStop(0, node.color);
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+        
+        // Move node for next frame
+        node.x += node.speedX;
+        node.y += node.speedY;
+        
+        // Bounce off edges
+        if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
+        if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
+      });
+      
+      // Request next animation frame
+      animationRef.current = requestAnimationFrame(drawNetwork);
+    };
+    
+    // Initialize and start animation
+    generateNodes();
+    animationRef.current = requestAnimationFrame(drawNetwork);
+    
+    // Regenerate network every 15 seconds
+    const intervalId = setInterval(() => {
+      generateNodes();
+    }, 15000);
+    
+    // Cleanup
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      clearInterval(intervalId);
+    };
+  }, []);
+  
   // Get icon for a service
   const getServiceIcon = (service: string) => {
     switch (service.toLowerCase()) {
