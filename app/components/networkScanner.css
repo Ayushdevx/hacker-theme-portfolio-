@@ -2,8 +2,9 @@
 .mobile-scroll-container {
   -webkit-overflow-scrolling: touch !important;
   overflow-y: scroll !important;
-  touch-action: pan-y !important;
+  touch-action: auto !important;
   position: relative;
+  max-height: 100% !important;
 }
 
 /* Make scrollbars more visible on mobile */
@@ -23,18 +24,50 @@
   }
 }
 
-/* Touch event handling improvements */
-@media (pointer: coarse) {
+/* Critical mobile fixes */
+@media (max-width: 768px) {
+  body, html {
+    overflow-x: hidden;
+    position: relative;
+    height: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: manipulation !important;
+  }
+  
   #network-scanner {
-    touch-action: pan-y !important;
+    touch-action: auto !important;
+    pointer-events: auto !important;
     user-select: text !important;
     -webkit-user-select: text !important;
+    position: relative;
+    z-index: 1;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  #network-scanner * {
+    touch-action: auto !important;
   }
   
   .log-container, 
   .overflow-x-auto,
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-y !important;
+    touch-action: auto !important;
+    max-height: 60vh !important;
+    overflow-y: scroll !important;
+  }
+  
+  /* Make sure table scrolls properly on mobile */
+  table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  
+  /* Ensure canvas doesn't interfere with scrolling */
+  canvas {
+    touch-action: none !important;
+    pointer-events: none !important;
   }
 }

@@ -1239,7 +1239,7 @@ const HackerTerminal = () => {
           scrollMarginTop: '100vh',
           scrollSnapAlign: 'none',
           overscrollBehavior: 'none',
-          touchAction: 'none'
+          touchAction: isMobile ? 'auto' : 'none'
         }}
       >
         {commands.map((cmd, i) => (

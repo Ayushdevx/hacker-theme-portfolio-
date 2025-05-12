@@ -70,43 +70,57 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     }
   }, []);
 
-  // Handle touch events explicitly to fix mobile scrolling
+  // Complete override for mobile touch handling
   useEffect(() => {
-    // Only for mobile devices
     if (!isMobile) return;
     
-    const componentEl = document.getElementById('network-scanner');
-    if (!componentEl) return;
-    
-    // Find all scrollable containers within the component
-    const scrollContainers = componentEl.querySelectorAll('.overflow-y-auto, .overflow-x-auto, .log-container');
-    
-    // Handle both iOS and Android touch behavior
-    scrollContainers.forEach(container => {
-      // Add specific attributes to improve scroll behavior
-      container.setAttribute('data-touch-scrollable', 'true');
+    // Critical fix for mobile scrolling - ensure touch events work properly
+    const disableTouchRestrictions = () => {
+      // Find all elements with potential touch restrictions
+      document.querySelectorAll('#network-scanner, #network-scanner *').forEach(el => {
+        const element = el as HTMLElement;
+        
+        // Force enable touch actions
+        element.style.touchAction = 'auto';
+        
+        // Remove potential problematic styles that might block scrolling
+        if (element.style.overflow === 'hidden') {
+          element.style.overflow = 'visible';
+        }
+        
+        // Ensure correct pointer events
+        element.style.pointerEvents = 'auto';
+      });
       
-      // For iOS specifically
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        (container as HTMLElement).style.WebkitOverflowScrolling = 'touch';
-      }
-    });
+      // Special handling for scrollable containers
+      document.querySelectorAll('.overflow-y-auto, .log-container, .mobile-scroll-container').forEach(el => {
+        const element = el as HTMLElement;
+        element.style.touchAction = 'auto';
+        element.style.WebkitOverflowScrolling = 'touch';
+        element.style.overflowY = 'scroll';
+      });
+    };
     
-    // Prevent parent container from capturing touch events when scrolling inside children
-    const handleTouchInScrollable = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      const scrollableParent = target.closest('[data-touch-scrollable="true"]');
-      
-      if (scrollableParent) {
-        // Let the event bubble normally to allow scrolling within the container
-        e.stopPropagation();
+    // Run immediately and after a slight delay to ensure it applies after React updates
+    disableTouchRestrictions();
+    const timeoutId = setTimeout(disableTouchRestrictions, 500);
+    
+    // Global touch event handler to prevent any remaining touch restrictions
+    const handleTouch = (e: TouchEvent) => {
+      // Don't stop propagation - let touch events bubble naturally
+      // Only prevent default on elements that shouldn't scroll (like canvas)
+      if ((e.target as HTMLElement).tagName === 'CANVAS') {
+        e.preventDefault();
       }
     };
     
-    componentEl.addEventListener('touchmove', handleTouchInScrollable, { passive: true });
+    document.addEventListener('touchstart', handleTouch, { passive: false });
+    document.addEventListener('touchmove', handleTouch, { passive: false });
     
     return () => {
-      componentEl.removeEventListener('touchmove', handleTouchInScrollable);
+      clearTimeout(timeoutId);
+      document.removeEventListener('touchstart', handleTouch);
+      document.removeEventListener('touchmove', handleTouch);
     };
   }, [isMobile]);
 
@@ -308,60 +322,6 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
 
     return () => clearInterval(interval);
   }, []);
-
-  // Mobile-friendly scroll prevention - only prevents auto-scroll on desktop
-  useEffect(() => {
-    // Skip for mobile devices
-    if (isMobile) return;
-    
-    // Get the component's container element
-    const componentEl = document.getElementById('network-scanner');
-    if (!componentEl) return;
-    
-    // Override any attempts to scroll this into view
-    const originalScrollIntoView = Element.prototype.scrollIntoView;
-    
-    // Create a no-op function for this element
-    componentEl.scrollIntoView = function(options) {
-      // Do nothing - prevents scrolling
-      return;
-    };
-    
-    return () => {
-      // Restore original behavior on cleanup
-      if (componentEl) {
-        componentEl.scrollIntoView = originalScrollIntoView;
-      }
-    };
-  }, [isMobile]);
-
-  useEffect(() => {
-    // Only for mobile devices
-    if (!isMobile) return;
-    
-    const componentEl = document.getElementById('network-scanner');
-    if (!componentEl) return;
-    
-    // Specifically allow touch events to be handled by the browser
-    const handleTouchStart = (e) => {
-      // Don't prevent default touch behavior on mobile
-      e.stopPropagation();
-    };
-    
-    const handleTouchMove = (e) => {
-      // Don't prevent default scrolling behavior on mobile
-      e.stopPropagation();
-    };
-    
-    // Add touch event listeners with capture=false to not interfere with browser defaults
-    componentEl.addEventListener('touchstart', handleTouchStart, { passive: true });
-    componentEl.addEventListener('touchmove', handleTouchMove, { passive: true });
-    
-    return () => {
-      componentEl.removeEventListener('touchstart', handleTouchStart);
-      componentEl.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, [isMobile]);
 
   const addLog = (message: string) => {
     const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
@@ -611,18 +571,22 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
   };
 
   return (
-    <div id="network-scanner" className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className}`} 
+    <div id="network-scanner" className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className} ${isMobile ? 'mobile-device' : ''}`} 
       style={{
         scrollMarginTop: '100vh',
         scrollSnapAlign: 'none',
-        // Different touch handling for mobile vs desktop
-        touchAction: isMobile ? 'pan-y' : 'none',
-        // Mobile-specific overrides
+        // Mobile-specific overrides for touch
         ...(isMobile ? {
-          WebkitOverflowScrolling: 'touch', // Enable momentum scrolling on iOS
+          touchAction: 'auto',
+          WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'auto',
-          userSelect: 'auto'
-        } : {})
+          userSelect: 'auto',
+          pointerEvents: 'auto',
+          position: 'relative',
+          zIndex: 1
+        } : {
+          touchAction: 'none'
+        })
       }}>
       <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
         <div className="flex items-center justify-center w-full md:w-auto mb-2 md:mb-0">
@@ -710,7 +674,13 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           </div>
           
           <div className={`overflow-x-auto overflow-y-auto max-h-48 sm:max-h-64 custom-scrollbar ${isMobile ? 'mobile-scroll-container' : ''}`}
-            style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}>
+            style={isMobile ? { 
+              WebkitOverflowScrolling: 'touch',
+              overflowY: 'scroll',
+              touchAction: 'auto',
+              msOverflowStyle: 'auto',
+              scrollbarWidth: 'thin'
+            } : {}}>
             <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-green-500/30 text-xs">
@@ -900,7 +870,14 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
         </div>
         
         <div className={`bg-black h-32 overflow-y-auto p-2 font-mono text-xs custom-scrollbar log-container ${isMobile ? 'mobile-scroll-container' : ''}`}
-             style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}>
+             style={isMobile ? { 
+               WebkitOverflowScrolling: 'touch',
+               overflowY: 'scroll',
+               touchAction: 'auto',
+               msOverflowStyle: 'auto',
+               scrollbarWidth: 'thin',
+               height: '150px'
+             } : {}}>
           {logs.length > 0 ? (
             logs.map((log, idx) => (
               <div key={idx} className="text-green-400 mb-1">

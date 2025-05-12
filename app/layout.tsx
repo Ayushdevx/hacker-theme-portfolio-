@@ -8,6 +8,7 @@ import { siteConfig } from "@/config";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
+import "./globals-mobile.css"; // Import mobile-specific fixes
 
 const inter = Inter({ subsets: ["latin"] });
 

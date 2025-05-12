@@ -44,6 +44,14 @@ export default function Home() {
     let lastIntentionalScrollY = 0;
     let isManualScrolling = false;
     
+    // Check if we're on mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+    
+    // Skip scroll prevention on mobile devices
+    if (isMobile) return;
+    
     // Update the last intentional position when user is actively scrolling
     const handleUserScroll = () => {
       if (!isManualScrolling) {
@@ -105,9 +113,9 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
           <div id="terminal-section" className="relative no-scroll-capture"
             style={{ 
-              touchAction: 'none', 
+              touchAction: 'auto', 
               pointerEvents: 'auto',
-              overscrollBehavior: 'none',
+              overscrollBehavior: 'auto',
               isolation: 'isolate'
             }}
           >
@@ -117,9 +125,9 @@ export default function Home() {
           </div>
           <div id="system-info-section" className="relative no-scroll-capture"
             style={{ 
-              touchAction: 'none', 
+              touchAction: 'auto', 
               pointerEvents: 'auto',
-              overscrollBehavior: 'none',
+              overscrollBehavior: 'auto',
               isolation: 'isolate'
             }}
           >
@@ -132,9 +140,9 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-6 md:mb-8">
           <div id="network-scanner-section" className="relative no-scroll-capture"
             style={{ 
-              touchAction: 'none', 
+              touchAction: 'auto', 
               pointerEvents: 'auto',
-              overscrollBehavior: 'none',
+              overscrollBehavior: 'auto',
               isolation: 'isolate'
             }}
           >
@@ -148,20 +156,40 @@ export default function Home() {
           <div 
             className="relative no-scroll-capture"
             style={{ 
-              touchAction: 'none', 
+              touchAction: 'auto', 
               pointerEvents: 'auto',
-              overscrollBehavior: 'none',
+              overscrollBehavior: 'auto',
               isolation: 'isolate'
             }}
             onTouchStart={(e) => {
-              // Only allow touch interaction on the component itself
+              // For mobile devices, use a more permissive touch approach
+              const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent
+              );
+              
+              if (isMobile) {
+                // Allow touch events on mobile
+                return;
+              }
+              
+              // Desktop touch handling - only allow touch interaction on the component itself
               const target = e.target as HTMLElement;
               if (!target.closest('.prevent-scroll-jump')) {
                 e.stopPropagation();
               }
             }}
             onTouchMove={(e) => {
-              // Block touch movement outside the component
+              // For mobile devices, use a more permissive touch approach
+              const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent
+              );
+              
+              if (isMobile) {
+                // Allow touch events on mobile
+                return;
+              }
+              
+              // Desktop touch handling - block touch movement outside the component
               const target = e.target as HTMLElement;
               if (!target.closest('.overflow-y-auto') && !target.closest('.overflow-auto')) {
                 e.preventDefault();

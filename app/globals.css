@@ -1283,3 +1283,47 @@ html, body {
   touch-action: none;
   scroll-behavior: auto !important;
 }
+
+/* Mobile touch and scrolling fixes */
+@media (pointer: coarse) {
+  /* Enable touch scrolling on all mobile devices */
+  html, body {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: auto !important;
+    touch-action: pan-y !important;
+    user-select: text !important;
+  }
+  
+  /* Fix for all interactive components */
+  .neo-panel,
+  .system-info-component,
+  .no-auto-scroll,
+  .no-scroll-capture,
+  #network-scanner,
+  #terminal-section,
+  #system-info-section,
+  #network-scanner-section,
+  #password-cracker {
+    touch-action: pan-y !important;
+    overscroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    user-select: text !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Make scrollable areas properly scroll on touch */
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .custom-scrollbar,
+  .log-container,
+  .mobile-scroll-container {
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior: contain !important;
+  }
+}
+
+/* Fix for components that were blocking scrolling */
+.no-scroll-capture {
+  touch-action: auto !important;
+}

@@ -180,7 +180,7 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
         scrollMarginTop: '100vh',
         scrollSnapAlign: 'none',
         overscrollBehavior: 'none',
-        touchAction: 'none',
+        touchAction: isMobile ? 'auto' : 'none',
       }}
     >
       <div className="mb-3 sm:mb-4 flex items-center">

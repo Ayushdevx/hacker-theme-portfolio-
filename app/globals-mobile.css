@@ -1,0 +1,70 @@
+/* Global mobile scrolling fixes */
+@media (max-width: 768px) {
+  /* Allow scrolling on body and html */
+  body, html {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: auto !important;
+    position: relative !important;
+    touch-action: manipulation !important;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+  
+  /* Fix all components to allow scrolling */
+  [id^="component-"], [class*="component"], #network-scanner, #password-cracker, .neo-panel {
+    touch-action: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    height: auto !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    z-index: 1;
+  }
+  
+  /* Ensure scroll containers can be scrolled */
+  .overflow-x-auto, .overflow-y-auto, .scroll-container, .log-container, .mobile-scroll-container,
+  [class*="overflow"], [class*="scroll"] {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: scroll !important;
+    touch-action: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    max-height: 60vh !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  
+  /* Prevent canvas elements from interfering with touch */
+  canvas {
+    touch-action: none !important;
+    pointer-events: none !important;
+    z-index: 0;
+  }
+  
+  /* Increase touch targets for mobile */
+  button, a, input, select {
+    min-height: 40px !important;
+    min-width: 40px !important;
+    touch-action: manipulation !important;
+  }
+}
+
+/* iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .mobile-scroll-container, .log-container, .overflow-y-auto, .overflow-x-auto {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Android-specific fixes */
+@supports not (-webkit-touch-callout: none) {
+  .mobile-scroll-container, .log-container, .overflow-y-auto, .overflow-x-auto {
+    overscroll-behavior-y: contain !important;
+  }
+}
