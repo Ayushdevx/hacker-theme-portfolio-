@@ -11,13 +11,20 @@ import HackerProfile from './components/HackerProfile';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
+import { useMobileDetection } from './hooks/useMobileDetection';
 
 // Import SafeScrollAnchor with no SSR to prevent hydration issues
 const SafeScrollAnchor = dynamic(() => import('@/lib/SafeScrollAnchor.js'), { ssr: false });
 
 export default function Home() {
+  // Use our mobile detection hook
+  const isMobile = useMobileDetection();
+  
   // Prevent scrolling to specific elements after initial load
   useEffect(() => {
+    // Skip on mobile devices - we want natural scrolling
+    if (isMobile) return;
+    
     const preventAutoScroll = () => {
       // Force maintain scroll position
       const currentPosition = window.scrollY;
@@ -43,11 +50,6 @@ export default function Home() {
     // Store the user's last intentional scroll position
     let lastIntentionalScrollY = 0;
     let isManualScrolling = false;
-    
-    // Check if we're on mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
     
     // Skip scroll prevention on mobile devices
     if (isMobile) return;
@@ -111,7 +113,7 @@ export default function Home() {
         <HackerProfile />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
-          <div id="terminal-section" className="relative no-scroll-capture"
+          <div id="terminal-section" className="relative no-scroll-capture mobile-friendly"
             style={{ 
               touchAction: 'auto', 
               pointerEvents: 'auto',
@@ -123,7 +125,7 @@ export default function Home() {
               <HackerTerminal />
             </SafeScrollAnchor>
           </div>
-          <div id="system-info-section" className="relative no-scroll-capture"
+          <div id="system-info-section" className="relative no-scroll-capture mobile-friendly"
             style={{ 
               touchAction: 'auto', 
               pointerEvents: 'auto',
@@ -138,7 +140,7 @@ export default function Home() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-6 md:mb-8">
-          <div id="network-scanner-section" className="relative no-scroll-capture"
+          <div id="network-scanner-section" className="relative no-scroll-capture mobile-friendly"
             style={{ 
               touchAction: 'auto', 
               pointerEvents: 'auto',
@@ -154,47 +156,12 @@ export default function Home() {
             <FileExplorer />
           </div>
           <div 
-            className="relative no-scroll-capture"
+            className="relative no-scroll-capture mobile-friendly"
             style={{ 
               touchAction: 'auto', 
               pointerEvents: 'auto',
               overscrollBehavior: 'auto',
               isolation: 'isolate'
-            }}
-            onTouchStart={(e) => {
-              // For mobile devices, use a more permissive touch approach
-              const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                navigator.userAgent
-              );
-              
-              if (isMobile) {
-                // Allow touch events on mobile
-                return;
-              }
-              
-              // Desktop touch handling - only allow touch interaction on the component itself
-              const target = e.target as HTMLElement;
-              if (!target.closest('.prevent-scroll-jump')) {
-                e.stopPropagation();
-              }
-            }}
-            onTouchMove={(e) => {
-              // For mobile devices, use a more permissive touch approach
-              const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                navigator.userAgent
-              );
-              
-              if (isMobile) {
-                // Allow touch events on mobile
-                return;
-              }
-              
-              // Desktop touch handling - block touch movement outside the component
-              const target = e.target as HTMLElement;
-              if (!target.closest('.overflow-y-auto') && !target.closest('.overflow-auto')) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
             }}
           >
             <SafeScrollAnchor id="password-cracker">

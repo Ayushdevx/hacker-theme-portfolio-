@@ -5,6 +5,7 @@ import { FaNetworkWired, FaWifi, FaServer, FaExclamationTriangle, FaLock, FaUnlo
 import GlitchText from './GlitchText';
 import TypewriterEffect from './TypewriterEffect';
 import './networkScanner.css'; // Import the custom CSS file for mobile fixes
+import { useMobileDetection } from '../hooks/useMobileDetection';
 
 interface ScanResult {
   ip: string;
@@ -42,7 +43,8 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
   const animationRef = useRef<number | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  // Use the hook instead of local state
+  const isMobile = useMobileDetection();
 
   const commonPorts = [
     { port: 21, service: 'FTP' },
@@ -60,15 +62,6 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     { port: 3389, service: 'RDP' },
     { port: 5900, service: 'VNC' },
   ];
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-      setIsMobile(isMobileDevice);
-    }
-  }, []);
 
   // Complete override for mobile touch handling
   useEffect(() => {

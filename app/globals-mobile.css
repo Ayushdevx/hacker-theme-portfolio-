@@ -1,19 +1,39 @@
 /* Global mobile scrolling fixes */
 @media (max-width: 768px) {
-  /* Allow scrolling on body and html */
-  body, html {
+  /* Root level scrolling fixes */
+  html {
+    height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  
+  body {
+    height: auto !important;
+    min-height: 100% !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: auto !important;
     position: relative !important;
-    touch-action: manipulation !important;
-    height: auto !important;
+    touch-action: pan-x pan-y !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Main container fix */
+  main {
+    position: relative !important;
     min-height: 100% !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    touch-action: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    pointer-events: auto !important;
   }
   
   /* Fix all components to allow scrolling */
-  [id^="component-"], [class*="component"], #network-scanner, #password-cracker, .neo-panel {
+  [id^="component-"], [class*="component"], #network-scanner, #password-cracker, 
+  #terminal-section, #system-info-section, .neo-panel, .relative {
     touch-action: auto !important;
     -webkit-overflow-scrolling: touch !important;
     user-select: text !important;
@@ -24,14 +44,15 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     z-index: 1;
+    max-height: none !important;
   }
   
   /* Ensure scroll containers can be scrolled */
   .overflow-x-auto, .overflow-y-auto, .scroll-container, .log-container, .mobile-scroll-container,
   [class*="overflow"], [class*="scroll"] {
     -webkit-overflow-scrolling: touch !important;
-    overflow-y: scroll !important;
-    touch-action: auto !important;
+    overflow-y: auto !important;
+    touch-action: pan-x pan-y !important;
     user-select: text !important;
     -webkit-user-select: text !important;
     max-height: 60vh !important;
@@ -39,8 +60,8 @@
     z-index: 10 !important;
   }
   
-  /* Prevent canvas elements from interfering with touch */
-  canvas {
+  /* Prevent canvas elements from interfering with touch except when needed for interaction */
+  canvas:not(.interactive-canvas) {
     touch-action: none !important;
     pointer-events: none !important;
     z-index: 0;
@@ -52,13 +73,41 @@
     min-width: 40px !important;
     touch-action: manipulation !important;
   }
+  
+  /* Disable fixed positioning that interferes with scrolling */
+  .fixed, .md\\:fixed {
+    position: absolute !important;
+  }
+  
+  /* Fix grid layout on mobile */
+  .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 16px !important;
+  }
 }
 
 /* iOS-specific fixes */
 @supports (-webkit-touch-callout: none) {
+  /* Fix native momentum scrolling for iOS */
   .mobile-scroll-container, .log-container, .overflow-y-auto, .overflow-x-auto {
     -webkit-overflow-scrolling: touch !important;
     overflow-y: auto !important;
+  }
+  
+  /* Additional iOS fixes */
+  body {
+    /* Fix iOS Safari 100vh issue */
+    height: -webkit-fill-available !important;
+    /* Fix iOS Safari rubber-banding effect */
+    position: fixed;
+    width: 100%;
+    overflow-y: scroll;
+  }
+  
+  html {
+    height: -webkit-fill-available !important;
   }
 }
 
@@ -66,5 +115,11 @@
 @supports not (-webkit-touch-callout: none) {
   .mobile-scroll-container, .log-container, .overflow-y-auto, .overflow-x-auto {
     overscroll-behavior-y: contain !important;
+    touch-action: pan-y !important;
+  }
+  
+  /* Fix full-height content on Android */
+  html, body {
+    height: 100% !important;
   }
 }

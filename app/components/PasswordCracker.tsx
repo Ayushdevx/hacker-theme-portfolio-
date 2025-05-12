@@ -10,6 +10,7 @@ import GlitchText from './GlitchText';
 import TypewriterEffect from './TypewriterEffect';
 import { usePreventAutoScroll } from '../../lib/usePreventAutoScroll';
 import { initScrollManager } from '../../lib/scrollManager';
+import { useMobileDetection } from '../hooks/useMobileDetection';
 import './passwordCracker.css';
 
 // Dynamically import 3D components with no SSR to prevent hydration errors
