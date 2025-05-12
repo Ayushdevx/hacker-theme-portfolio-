@@ -8,7 +8,10 @@ interface MobileContextType {
 }
 
 // Create the context with a default value
-const MobileContext = createContext<MobileContextType>({ isMobile: false });
+export const MobileContext = createContext<MobileContextType>({ isMobile: false });
+
+// Custom hook to use the mobile context
+export const useMobile = () => useContext(MobileContext);
 
 // Provider component
 export const MobileProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
@@ -48,9 +51,6 @@ export const MobileProvider: React.FC<{children: React.ReactNode}> = ({ children
     </MobileContext.Provider>
   );
 };
-
-// Custom hook to use the mobile context
-export const useMobile = () => useContext(MobileContext);
 
 // Export the isMobile property directly for simpler use
 export const useMobileDetection = () => {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { FaLock, FaUnlock, FaFolder, FaFile, FaCode, FaTerminal } from 'react-icons/fa';
+import { useMobileDetection } from '../hooks/useMobileDetection';
 
 interface Command {
   input: string;
@@ -33,6 +34,8 @@ const HackerTerminal = () => {
   const [isBusy, setIsBusy] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  // Get mobile detection
+  const isMobile = useMobileDetection();
 
   // Initialize file system (more complete and interesting structure)
   const [fileSystem, setFileSystem] = useState<FileSystemNode>({

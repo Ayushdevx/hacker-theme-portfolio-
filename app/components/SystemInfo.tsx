@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaServer, FaMemory, FaHdd, FaMicrochip, FaNetworkWired, FaLinux, FaUserSecret, FaShieldAlt, FaLock, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import GlitchText from './GlitchText';
 import TypewriterEffect from './TypewriterEffect';
+import { useMobileDetection } from '../hooks/useMobileDetection';
 
 interface SystemInfoProps {
   className?: string;
@@ -26,6 +27,8 @@ const SystemInfo = ({ className = "" }: SystemInfoProps) => {
     'ssh.service',
     'apache2.service'
   ]);
+  // Get mobile detection
+  const isMobile = useMobileDetection();
   
   const logEndRef = useRef<HTMLDivElement>(null);
 

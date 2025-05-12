@@ -1,12 +1,23 @@
 'use client';
 
-import { useMobile } from '../providers/MobileProvider';
+import { useContext } from 'react';
+import { MobileContext, useMobile } from '../providers/MobileProvider';
 
-// Re-export the hook from our provider
+// Use our mobile detection hook
 export const useMobileDetection = () => {
-  // Get the mobile status from our context provider
-  const { isMobile } = useMobile();
-  return isMobile;
+  // Try to use the context provider first
+  try {
+    const context = useContext(MobileContext);
+    return context.isMobile;
+  } catch (e) {
+    // Fallback to direct detection if context not available
+    if (typeof window !== 'undefined') {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+    }
+    return false;
+  }
 };
 
 // Export a variable for static/non-hook usage
