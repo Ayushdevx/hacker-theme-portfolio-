@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaNetworkWired, FaWifi, FaServer, FaExclamationTriangle, FaLock, FaUnlock, FaSearch, FaGlobe, FaRobot } from 'react-icons/fa';
 import GlitchText from './GlitchText';
 import TypewriterEffect from './TypewriterEffect';
+import './networkScanner.css'; // Import the custom CSS file for mobile fixes
 
 interface ScanResult {
   ip: string;
@@ -69,24 +70,68 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     }
   }, []);
 
+  // Handle touch events explicitly to fix mobile scrolling
+  useEffect(() => {
+    // Only for mobile devices
+    if (!isMobile) return;
+    
+    const componentEl = document.getElementById('network-scanner');
+    if (!componentEl) return;
+    
+    // Find all scrollable containers within the component
+    const scrollContainers = componentEl.querySelectorAll('.overflow-y-auto, .overflow-x-auto, .log-container');
+    
+    // Handle both iOS and Android touch behavior
+    scrollContainers.forEach(container => {
+      // Add specific attributes to improve scroll behavior
+      container.setAttribute('data-touch-scrollable', 'true');
+      
+      // For iOS specifically
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        (container as HTMLElement).style.WebkitOverflowScrolling = 'touch';
+      }
+    });
+    
+    // Prevent parent container from capturing touch events when scrolling inside children
+    const handleTouchInScrollable = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      const scrollableParent = target.closest('[data-touch-scrollable="true"]');
+      
+      if (scrollableParent) {
+        // Let the event bubble normally to allow scrolling within the container
+        e.stopPropagation();
+      }
+    };
+    
+    componentEl.addEventListener('touchmove', handleTouchInScrollable, { passive: true });
+    
+    return () => {
+      componentEl.removeEventListener('touchmove', handleTouchInScrollable);
+    };
+  }, [isMobile]);
+
+  // Add network visualization animation with mobile optimizations
   useEffect(() => {
     const canvas = document.getElementById('network-canvas') as HTMLCanvasElement;
     if (!canvas) return;
-
+    
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
+    
+    // Set canvas size to match container
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
       if (parent) {
         canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
+        // Make canvas smaller on mobile for better performance
+        canvas.height = isMobile ? 100 : parent.clientHeight || 150;
       }
     };
-
+    
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-
+    
+    // Network nodes - fewer nodes on mobile for performance
     const nodes: Array<{
       x: number,
       y: number,
@@ -96,58 +141,77 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
       speedY: number,
       connections: number[]
     }> = [];
-
+    
+    // Generate random nodes - adjust based on mobile/desktop
     const generateNodes = () => {
-      nodes.length = 0;
-      const numNodes = Math.floor(Math.random() * 5) + 8;
-
+      nodes.length = 0; // Clear existing nodes
+      // Fewer nodes on mobile for better performance
+      const numNodes = isMobile ? 
+                      (Math.floor(Math.random() * 3) + 5) : // 5-7 on mobile 
+                      (Math.floor(Math.random() * 5) + 8);  // 8-12 on desktop
+      
+      // Generate main nodes
       for (let i = 0; i < numNodes; i++) {
         nodes.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: Math.random() * 2 + 2,
-          color: i === 0 ? '#10B981' :
-                 Math.random() > 0.8 ? '#EF4444' :
-                 '#3B82F6',
-          speedX: (Math.random() - 0.5) * 0.3,
-          speedY: (Math.random() - 0.5) * 0.3,
+          color: i === 0 ? '#10B981' : // First node is green (scanner)
+                 Math.random() > 0.8 ? '#EF4444' : // Some red nodes (vulnerable)
+                 '#3B82F6', // Default blue
+          // Slower animation on mobile for better performance
+          speedX: (Math.random() - 0.5) * (isMobile ? 0.2 : 0.3),
+          speedY: (Math.random() - 0.5) * (isMobile ? 0.2 : 0.3),
           connections: []
         });
       }
-
+      
+      // Create connections - each node connects to 1-3 other nodes
       nodes.forEach((node, i) => {
-        const numConnections = Math.floor(Math.random() * 3) + 1;
+        // Fewer connections on mobile
+        const numConnections = isMobile ? 
+                              Math.floor(Math.random() * 2) + 1 : // 1-2 on mobile
+                              Math.floor(Math.random() * 3) + 1;  // 1-3 on desktop
+                              
         for (let j = 0; j < numConnections; j++) {
+          // Pick a random node to connect to
           let targetIndex;
           do {
             targetIndex = Math.floor(Math.random() * nodes.length);
           } while (targetIndex === i || node.connections.includes(targetIndex));
-
+          
+          // Add bidirectional connection
           node.connections.push(targetIndex);
           nodes[targetIndex].connections.push(i);
         }
       });
     };
-
+    
+    // Draw the network
     const drawNetwork = () => {
+      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+      
+      // Draw connections
       nodes.forEach((node, i) => {
         node.connections.forEach(targetIndex => {
           const target = nodes[targetIndex];
-
+          
+          // Draw connection line
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
           ctx.lineTo(target.x, target.y);
-          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)';
+          ctx.strokeStyle = 'rgba(49, 163, 84, 0.2)'; // Light green with transparency
           ctx.lineWidth = 0.5;
           ctx.stroke();
-
-          if (Math.random() > 0.98) {
+          
+          // Occasionally draw "data packet" moving along the connection
+          // Less frequently on mobile for better performance
+          if (Math.random() > (isMobile ? 0.99 : 0.98)) {
             const packetProgress = Math.random();
             const packetX = node.x + (target.x - node.x) * packetProgress;
             const packetY = node.y + (target.y - node.y) * packetProgress;
-
+            
             ctx.beginPath();
             ctx.arc(packetX, packetY, 1.5, 0, Math.PI * 2);
             ctx.fillStyle = '#10B981';
@@ -155,57 +219,84 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           }
         });
       });
-
+      
+      // Draw nodes
       nodes.forEach(node => {
-        const gradient = ctx.createRadialGradient(
-          node.x, node.y, node.radius / 2,
-          node.x, node.y, node.radius * 2
-        );
-        gradient.addColorStop(0, node.color);
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = node.color;
-        ctx.fill();
-
+        // Simpler rendering on mobile
+        if (isMobile) {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+          ctx.fillStyle = node.color;
+          ctx.fill();
+        } else {
+          // Node glow effect on desktop
+          const gradient = ctx.createRadialGradient(
+            node.x, node.y, node.radius / 2,
+            node.x, node.y, node.radius * 2
+          );
+          gradient.addColorStop(0, node.color);
+          gradient.addColorStop(1, 'rgba(0,0,0,0)');
+          
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
+          ctx.fillStyle = gradient;
+          ctx.fill();
+          
+          // Node circle
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+          ctx.fillStyle = node.color;
+          ctx.fill();
+        }
+        
+        // Move node for next frame
         node.x += node.speedX;
         node.y += node.speedY;
-
+        
+        // Bounce off edges
         if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
         if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
       });
-
+      
+      // Request next animation frame
       animationRef.current = requestAnimationFrame(drawNetwork);
     };
-
+    
+    // Initialize and start animation
     generateNodes();
     animationRef.current = requestAnimationFrame(drawNetwork);
-
+    
+    // Regenerate network - less frequently on mobile
     const intervalId = setInterval(() => {
       generateNodes();
-    }, 15000);
-
+    }, isMobile ? 20000 : 15000); // 20s for mobile, 15s for desktop
+    
+    // Cleanup
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       clearInterval(intervalId);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [isMobile]);
 
+  // Scroll logs to bottom when new logs are added
   useEffect(() => {
     if (logEndRef.current) {
+      // Only scroll the log container, not the entire page
       const logContainer = logEndRef.current.closest('.log-container');
       if (logContainer) {
-        logContainer.scrollTop = logContainer.scrollHeight;
+        // Use smooth scrolling on desktop, but instant on mobile for better performance
+        if (isMobile) {
+          logContainer.scrollTop = logContainer.scrollHeight;
+        } else {
+          logContainer.scrollTo({
+            top: logContainer.scrollHeight,
+            behavior: 'smooth'
+          });
+        }
       }
     }
-  }, [logs]);
+  }, [logs, isMobile]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -217,6 +308,60 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Mobile-friendly scroll prevention - only prevents auto-scroll on desktop
+  useEffect(() => {
+    // Skip for mobile devices
+    if (isMobile) return;
+    
+    // Get the component's container element
+    const componentEl = document.getElementById('network-scanner');
+    if (!componentEl) return;
+    
+    // Override any attempts to scroll this into view
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    
+    // Create a no-op function for this element
+    componentEl.scrollIntoView = function(options) {
+      // Do nothing - prevents scrolling
+      return;
+    };
+    
+    return () => {
+      // Restore original behavior on cleanup
+      if (componentEl) {
+        componentEl.scrollIntoView = originalScrollIntoView;
+      }
+    };
+  }, [isMobile]);
+
+  useEffect(() => {
+    // Only for mobile devices
+    if (!isMobile) return;
+    
+    const componentEl = document.getElementById('network-scanner');
+    if (!componentEl) return;
+    
+    // Specifically allow touch events to be handled by the browser
+    const handleTouchStart = (e) => {
+      // Don't prevent default touch behavior on mobile
+      e.stopPropagation();
+    };
+    
+    const handleTouchMove = (e) => {
+      // Don't prevent default scrolling behavior on mobile
+      e.stopPropagation();
+    };
+    
+    // Add touch event listeners with capture=false to not interfere with browser defaults
+    componentEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+    componentEl.addEventListener('touchmove', handleTouchMove, { passive: true });
+    
+    return () => {
+      componentEl.removeEventListener('touchstart', handleTouchStart);
+      componentEl.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [isMobile]);
 
   const addLog = (message: string) => {
     const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
@@ -465,31 +610,19 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
     }
   };
 
-  useEffect(() => {
-    if (isMobile) return;
-
-    const componentEl = document.getElementById('network-scanner');
-    if (!componentEl) return;
-
-    const originalScrollIntoView = Element.prototype.scrollIntoView;
-
-    componentEl.scrollIntoView = function(options) {
-      return;
-    };
-
-    return () => {
-      if (componentEl) {
-        componentEl.scrollIntoView = originalScrollIntoView;
-      }
-    };
-  }, [isMobile]);
-
   return (
     <div id="network-scanner" className={`neo-panel p-4 ${isGlitching ? 'glitch' : ''} ${className}`} 
       style={{
         scrollMarginTop: '100vh',
         scrollSnapAlign: 'none',
-        touchAction: isMobile ? 'auto' : 'none',
+        // Different touch handling for mobile vs desktop
+        touchAction: isMobile ? 'pan-y' : 'none',
+        // Mobile-specific overrides
+        ...(isMobile ? {
+          WebkitOverflowScrolling: 'touch', // Enable momentum scrolling on iOS
+          overscrollBehavior: 'auto',
+          userSelect: 'auto'
+        } : {})
       }}>
       <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
         <div className="flex items-center justify-center w-full md:w-auto mb-2 md:mb-0">
@@ -534,7 +667,12 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
       
       {/* Network Visualization */}
       <div className="mb-4 border border-green-500/30 rounded bg-black p-2">
-        <canvas id="network-canvas" width="800" height="150" className="w-full h-auto"></canvas>
+        <canvas id="network-canvas" 
+          width="800" 
+          height={isMobile ? "100" : "150"} 
+          className="w-full h-auto"
+          style={{ touchAction: 'none' }} // Prevent canvas from capturing touch events
+        ></canvas>
       </div>
       
       {/* Scanning Progress */}
@@ -571,7 +709,8 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
             )}
           </div>
           
-          <div className="overflow-x-auto overflow-y-auto max-h-48 sm:max-h-64 custom-scrollbar">
+          <div className={`overflow-x-auto overflow-y-auto max-h-48 sm:max-h-64 custom-scrollbar ${isMobile ? 'mobile-scroll-container' : ''}`}
+            style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}>
             <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-green-500/30 text-xs">
@@ -760,7 +899,8 @@ const NetworkScanner = ({ className = "" }: NetworkScannerProps) => {
           </div>
         </div>
         
-        <div className="bg-black h-32 overflow-y-auto p-2 font-mono text-xs custom-scrollbar log-container">
+        <div className={`bg-black h-32 overflow-y-auto p-2 font-mono text-xs custom-scrollbar log-container ${isMobile ? 'mobile-scroll-container' : ''}`}
+             style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}>
           {logs.length > 0 ? (
             logs.map((log, idx) => (
               <div key={idx} className="text-green-400 mb-1">

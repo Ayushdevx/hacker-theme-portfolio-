@@ -1,0 +1,40 @@
+/* Mobile scroll handling for NetworkScanner */
+.mobile-scroll-container {
+  -webkit-overflow-scrolling: touch !important;
+  overflow-y: scroll !important;
+  touch-action: pan-y !important;
+  position: relative;
+}
+
+/* Make scrollbars more visible on mobile */
+.mobile-scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(16, 185, 129, 0.5);
+  border-radius: 2px;
+}
+
+/* Fix for iOS momentum scrolling */
+@supports (-webkit-touch-callout: none) {
+  .mobile-scroll-container {
+    overflow-y: auto !important;
+  }
+}
+
+/* Touch event handling improvements */
+@media (pointer: coarse) {
+  #network-scanner {
+    touch-action: pan-y !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+  
+  .log-container, 
+  .overflow-x-auto,
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+  }
+}
